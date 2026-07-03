@@ -176,12 +176,15 @@ export const PROJECTS = [
     title: "Morningside Art Exchange (MAE) Stickers/Temporary Tattoo",
     categories: ["community", "graphic-design"],
     year: "2025",
-    thumbnail: null,
+    thumbnail: publicAsset("work/mae-stickers-thumb.jpg"),
     context: "The Morningside Art Exchange (also known as MAE) is a grassroots, student-led arts collective that brings together student artists and local residents. We have our titular event, the Morningside Art Exchange, quarterly at nearby parks and operate on a barter-and-donation model. We also sell merchandise that we design ourselves.",
     problem: "We always are looking for new merchandise we can give away at events and ways to do experential marketing.",
     process: "I sketched out a lipstick kiss mark with 'MAE' hidden in it on my iPad before cleaning it up on Illustrator. I printed them out as stickers at my school's design center and on temporary tattoo paper.",
     outcome: "This is arguably our most popular merch item, and I'm quite proud of the design.",
-    processImages: [],
+    processImages: [
+      publicAsset("work/mae-stickers-process-1.png"),
+      publicAsset("work/mae-stickers-process-2.png"),
+    ],
   },
   {
     id: 9,
