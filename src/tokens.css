@@ -1,0 +1,25 @@
+:root {
+  /* — Color — */
+  --ink: #16140f;
+  --ink-soft: #5b574c;
+  --ink-faint: #716d5e;
+  --paper: #faf9f4;
+  --paper-warm: #f2efe4;
+  --line: #e7e2d6;
+  --accent: #1c7a44;
+  --accent-dark: #145c33;
+  --accent-soft: #e8f5ec;
+
+  /* — Type — */
+  --font-display: "Bricolage Grotesque", "Avenir Next", "Segoe UI", system-ui, sans-serif;
+  --font-body: "IBM Plex Sans", "Helvetica Neue", Arial, system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", "SFMono-Regular", Menlo, Consolas, monospace;
+
+  /* — Layout — */
+  --nav-h: 84px;
+  --container: none;
+  --gutter: clamp(20px, 5vw, 64px);
+
+  /* — Motion — */
+  --ease: cubic-bezier(0.65, 0, 0.35, 1);
+}

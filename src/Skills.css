@@ -1,0 +1,48 @@
+.skills-intro {
+  margin: 0 auto 56px;
+  max-width: 560px;
+  text-align: center;
+}
+
+.skills-heading {
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  font-weight: 600;
+}
+
+.skills-groups {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 40px;
+}
+
+.skills-group-label {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin-bottom: 18px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--line);
+}
+
+.skills-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.skills-tags li {
+  font-size: 0.92rem;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: var(--paper-warm);
+  color: var(--ink);
+}
+
+@media (max-width: 880px) {
+  .skills-groups {
+    grid-template-columns: 1fr;
+    gap: 36px;
+  }
+}

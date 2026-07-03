@@ -1,0 +1,50 @@
+.bajlogo-line {
+  fill: none;
+}
+
+.bajlogo--animated .bajlogo-line {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  /* At dashoffset:1 the round linecap still renders a hairline sliver of
+     the dash as a full dot (browser rounding at the dash boundary). Stay
+     hidden until this line's own animation actually starts. */
+  opacity: 0;
+}
+
+.bajlogo--animated .bajlogo-line-1 {
+  animation: bajlogo-dash 1s linear forwards;
+}
+.bajlogo--animated .bajlogo-line-2 {
+  animation: bajlogo-dash 0.5s linear forwards;
+  animation-delay: 1s;
+}
+.bajlogo--animated .bajlogo-line-3 {
+  animation: bajlogo-dash 0.25s linear forwards;
+  animation-delay: 1.5s;
+}
+.bajlogo--animated .bajlogo-line-4 {
+  animation: bajlogo-dash 0.25s linear forwards;
+  animation-delay: 1.75s;
+}
+.bajlogo--animated .bajlogo-line-5 {
+  animation: bajlogo-dash 0.5s linear forwards;
+  animation-delay: 2s;
+}
+.bajlogo--animated .bajlogo-line-6 {
+  animation: bajlogo-dash 0.5s linear forwards;
+  animation-delay: 2.5s;
+}
+
+@keyframes bajlogo-dash {
+  0% {
+    opacity: 1;
+    stroke-dashoffset: 1;
+  }
+  to {
+    /* Explicit here too — an unset endpoint falls back to the element's
+       pre-animation opacity (0), fading the whole stroke out instead of
+       keeping it solid while it draws. */
+    opacity: 1;
+    stroke-dashoffset: 0;
+  }
+}

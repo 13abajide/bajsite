@@ -1,0 +1,259 @@
+/* Shared column width for the whole detail page — narrower than the
+   full-bleed Work grid, sized for comfortable reading. Combined selector
+   so it reliably beats the shared .section rule regardless of import
+   order. */
+.section.work-detail {
+  max-width: 820px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* — Back link — */
+.work-detail-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  margin-bottom: 32px;
+  transition: color 0.2s ease;
+}
+.work-detail-back:hover,
+.work-detail-back:focus-visible {
+  color: var(--accent);
+}
+.work-detail-back-arrow {
+  display: inline-block;
+  transition: transform 0.2s var(--ease);
+}
+.work-detail-back:hover .work-detail-back-arrow,
+.work-detail-back:focus-visible .work-detail-back-arrow {
+  transform: translateX(-4px);
+}
+
+/* — Hero image — */
+.work-detail-hero-media {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 16px;
+  overflow: hidden;
+}
+.work-detail-hero-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.work-detail-hero-media iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+/* — Placeholder tiles, shared by the hero and the marquee — */
+.img-placeholder {
+  background: var(--paper-warm);
+  border: 1px solid var(--line);
+  color: var(--ink-faint);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.work-detail-hero-media.img-placeholder svg {
+  width: 15%;
+  max-width: 72px;
+  height: auto;
+}
+.story-marquee-item.img-placeholder svg {
+  width: 34%;
+  max-width: 30px;
+  height: auto;
+}
+
+/* — Title + meta — */
+.work-detail-meta {
+  margin-top: 32px;
+  margin-bottom: 48px;
+}
+.work-detail-title {
+  font-size: clamp(2.2rem, 5.5vw, 3.4rem);
+  font-weight: 700;
+  margin-bottom: 14px;
+}
+.work-detail-tags {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+/* — Story cycler — */
+.story-frame {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.story-arrow {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  background: var(--paper);
+  color: var(--ink);
+  font-size: 20px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+.story-arrow:hover,
+.story-arrow:focus-visible {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.story-panel {
+  flex: 1;
+  min-width: 0;
+  background: var(--paper-warm);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: clamp(24px, 4vw, 40px);
+}
+
+.story-steps {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 18px;
+}
+.story-dot {
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: none;
+  background: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.story-dot::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--line);
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+.story-dot:hover::before,
+.story-dot:focus-visible::before {
+  background: var(--ink-faint);
+}
+.story-dot--active::before {
+  background: var(--accent);
+  transform: scale(1.4);
+}
+
+.story-body {
+  animation: story-fade 0.4s var(--ease);
+}
+@keyframes story-fade {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.story-label {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 14px;
+}
+
+.story-text {
+  font-size: 1.05rem;
+  line-height: 1.65;
+  color: var(--ink-soft);
+  white-space: pre-line;
+}
+
+/* — Process marquee — */
+.story-marquee {
+  margin-top: 28px;
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent,
+    black 6%,
+    black 94%,
+    transparent
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    black 6%,
+    black 94%,
+    transparent
+  );
+}
+.story-marquee-track {
+  display: flex;
+  gap: 14px;
+  width: max-content;
+  animation: story-marquee 24s linear infinite;
+}
+.story-marquee:hover .story-marquee-track {
+  animation-play-state: paused;
+}
+.story-marquee-item {
+  flex-shrink: 0;
+  width: 150px;
+  aspect-ratio: 4 / 3;
+  border-radius: 10px;
+  overflow: hidden;
+}
+.story-marquee-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+@keyframes story-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@media (max-width: 640px) {
+  .story-frame {
+    flex-wrap: wrap;
+    justify-content: center;
+    row-gap: 16px;
+  }
+  .story-panel {
+    order: 1;
+    flex-basis: 100%;
+  }
+  .story-arrow--prev {
+    order: 2;
+  }
+  .story-arrow--next {
+    order: 3;
+  }
+}
