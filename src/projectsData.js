@@ -104,6 +104,7 @@ export const PROJECTS = [
     categories: ["school", "ui-ux"],
     year: "2025",
     thumbnail: null,
+    embedUrl: "https://lgbtq2025.columbiaspectator.com",
     context: "The Columbia Daily Spectator is one of Columbia University’s student newspapers, published by the student-led Spectator Publishing Company. During the winter of 2025, I joined the Product team of Spectator's B&I department, which oversees the design, strategy, and management of the company’s product portfolio. This portfolio includes tools that most (if not all) of the Columbia community rely on, explaining why they receive over 350,000 visitors per month.",
     problem: "I was given about a week to design the 2025 digital special edition for LGBTQ+ History Month with llitte to no direction besides the general layout of the page.",
     process: "I first created a moodboard with images, colors, and typography to express to the team what I thought the general vibe of the special edition should be. Once I got the OK from my supervisor, I created a low-fidelity prototype of the site on Figma. My supervisor built upon this to make it higher-fidelity, and I added finishing touches before sending the Figma file over to the Engineering team so they could turn the design into code.",
