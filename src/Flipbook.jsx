@@ -26,9 +26,11 @@ function ChevronIcon({ direction }) {
 
 // react-pageflip needs a ref on each page for its internal DOM
 // measurements. `rotate` is for source photos that were shot/exported
-// sideways and are meant to display that way; the scale compensates for
-// the 90deg swap so a photo whose native ratio matches the page ratio
-// still fills it edge to edge.
+// sideways and are meant to display that way — object-fit:contain
+// already keeps a normal page uncropped, but a rotated one needs an
+// extra shrink (by pageAspectRatio) since rotating swaps its footprint
+// to the page's inverse ratio; without it the rotated image would
+// overflow the page on one axis instead of just letterboxing.
 const FlipPage = forwardRef(function FlipPage({ src, rotate, pageAspectRatio, title, onZoom }, ref) {
   return (
     <div className="flipbook-page" ref={ref}>
@@ -45,7 +47,7 @@ const FlipPage = forwardRef(function FlipPage({ src, rotate, pageAspectRatio, ti
             className="flipbook-page-img"
             style={
               rotate
-                ? { transform: `rotate(${rotate}deg) scale(${1 / pageAspectRatio})` }
+                ? { transform: `rotate(${rotate}deg) scale(${pageAspectRatio})` }
                 : undefined
             }
           />
