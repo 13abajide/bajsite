@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>babájide's library</title>
+
+<link href="vendor/bootstrap-5.0.2.min.css" rel="stylesheet" />
+<link
+  href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,600;1,300&display=swap"
+  rel="stylesheet"
+/>
+
+<style>
+:root {
+  --ct-bg:        #fcfaf5;
+  --ct-surface:   #fcfaf5;
+  --ct-border:    #e8e4dd;
+  --ct-accent:    #556b4d;
+  --ct-accent2:   #6c5c53;
+  --ct-text:      #3e2c22;
+  --ct-muted:     #8c7c73;
+  --ct-font-head: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --ct-font-body: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+body {
+  background-color: var(--ct-bg);
+  color: var(--ct-text);
+  font-family: var(--ct-font-body);
+  font-weight: 400;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: var(--ct-text); text-decoration: none; transition: color 0.15s; }
+a:hover { color: #445c3d; }
+
+.ct-navbar {
+  background: #f5f2eb;
+  border-bottom: 1px solid var(--ct-border);
+  padding: 0.5rem 0;
+  position: sticky;
+  top: 0;
+  z-index: 999;
+}
+.ct-brand {
+  font-family: var(--ct-font-head);
+  font-size: 1.2rem;
+  font-weight: 500;
+  color: var(--ct-text) !important;
+  text-decoration: none;
+  line-height: 1;
+  cursor: pointer;
+}
+.ct-search-input {
+  background: var(--ct-surface);
+  border: 1px solid var(--ct-border);
+  color: var(--ct-text);
+  border-radius: 14px;
+  width: 240px;
+  font-family: var(--ct-font-body);
+  font-size: 0.85rem;
+  padding: 0.25rem 0.75rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.ct-search-input::placeholder { color: var(--ct-muted); }
+.ct-search-input:focus {
+  outline: none;
+  border-color: #879b7b;
+  background: var(--ct-surface);
+  color: var(--ct-text);
+  box-shadow: 0 0 0 3px rgba(85, 107, 77, 0.2);
+}
+.ct-search-btn {
+  background: var(--ct-surface);
+  color: var(--ct-text);
+  border: 1px solid var(--ct-border);
+  border-radius: 14px;
+  font-size: 0.85rem;
+  padding: 0.25rem 0.75rem;
+  transition: background 0.2s;
+}
+.ct-search-btn:hover { background: #efebe1; }
+
+.ct-hero { padding: 1.5rem 0 1rem; text-align: center; }
+.ct-page-title {
+  font-family: var(--ct-font-head);
+  font-size: 1.5rem;
+  font-weight: 500;
+  letter-spacing: normal;
+  color: var(--ct-text);
+  margin-bottom: 0.25rem;
+}
+.ct-subtitle {
+  color: var(--ct-muted);
+  font-size: 0.9rem;
+  font-weight: 400;
+  letter-spacing: normal;
+  text-transform: none;
+}
+
+.ct-card {
+  background: var(--ct-surface);
+  border: 1px solid var(--ct-border);
+  border-radius: 6px;
+  overflow: hidden;
+  transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+.ct-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  border-color: #d1c8bd;
+}
+.ct-card-img {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  display: block;
+  border-bottom: 1px solid var(--ct-border);
+}
+.ct-no-art {
+  background: #f2eee6;
+  color: var(--ct-muted);
+  font-size: 0.8rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.ct-card-body { padding: 0.75rem; text-align: center; }
+.ct-card-title {
+  font-family: var(--ct-font-head);
+  font-size: 0.9rem;
+  font-weight: 500;
+  letter-spacing: normal;
+  color: var(--ct-text);
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.ct-card-artist {
+  color: var(--ct-muted);
+  font-size: 0.8rem;
+  margin-top: 0.15rem;
+  text-transform: none;
+  letter-spacing: normal;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ct-query-highlight { color: var(--ct-text); font-weight: 600; }
+
+.ct-results-list { list-style: none; padding: 0; margin: 0; border-top: 1px solid var(--ct-border); }
+.ct-result-item { border-bottom: 1px solid var(--ct-border); padding: 0.5rem 0; transition: background-color 0.1s; }
+.ct-result-item:hover { background-color: var(--ct-accent); padding-left: 0; }
+.ct-result-link { color: var(--ct-text); text-decoration: none; font-size: 0.95rem; font-weight: 400; display: block; padding: 0 0.5rem; }
+.ct-result-item:hover .ct-result-link { color: var(--ct-bg); }
+.ct-no-results { color: var(--ct-muted); font-size: 0.95rem; margin-top: 1rem; }
+
+.ct-song-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--ct-surface);
+  border: none;
+  border-radius: 0;
+  overflow: hidden;
+  max-width: 900px;
+  margin: 0 auto;
+  box-shadow: none;
+}
+@media (min-width: 768px) {
+  .ct-song-card { flex-direction: row; align-items: flex-start; gap: 2.5rem; }
+  .ct-song-card-left { flex: 0 0 250px; width: 250px; }
+}
+.ct-song-card-left {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  background: var(--ct-bg);
+  position: relative;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.15);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.ct-song-card-left img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.ct-song-card-right { flex: 1; padding: 1rem 0; display: flex; flex-direction: column; justify-content: flex-start; }
+.ct-song-title {
+  font-family: var(--ct-font-head);
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--ct-accent);
+  margin-bottom: 0.2rem;
+  letter-spacing: normal;
+  line-height: 1.2;
+}
+.ct-song-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 1.5rem;
+  font-size: 0.9rem;
+  color: var(--ct-muted);
+  font-weight: 400;
+  letter-spacing: normal;
+  text-transform: none;
+}
+.ct-song-meta span { display: flex; align-items: center; }
+.ct-song-meta span:not(:last-child)::after { content: '•'; margin-left: 10px; color: var(--ct-muted); }
+.ct-song-desc { color: var(--ct-text); font-size: 0.95rem; line-height: 1.5; margin-bottom: 2rem; }
+.ct-song-details { display: flex; flex-direction: column; gap: 0.5rem; border-top: 1px solid var(--ct-border); padding-top: 1rem; }
+.ct-detail-item { display: flex; font-size: 0.85rem; }
+.ct-detail-item h6 { font-family: var(--ct-font-head); color: var(--ct-muted); font-size: 0.85rem; font-weight: 600; margin: 0; width: 100px; letter-spacing: normal; }
+.ct-detail-item p { color: var(--ct-text); font-size: 0.85rem; margin: 0; }
+
+.ct-nav-link {
+  color: var(--ct-muted) !important;
+  font-size: 0.85rem;
+  font-weight: 500;
+  text-decoration: none;
+  padding: 0.25rem 0.5rem;
+  border-radius: 8px;
+  transition: color 0.15s, background 0.15s;
+  cursor: pointer;
+}
+.ct-nav-link:hover, .ct-nav-active { color: #445c3d !important; background: rgba(85,107,77,0.08); }
+
+.ct-section-label { font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ct-muted); }
+
+.ct-card-meta-row { display: flex; gap: 0.5rem; justify-content: center; color: var(--ct-muted); font-size: 0.75rem; margin-top: 0.2rem; }
+.ct-card-meta-row span:not(:last-child)::after { content: '·'; margin-left: 0.5rem; }
+.ct-card-desc { color: var(--ct-muted); font-size: 0.78rem; line-height: 1.45; margin-top: 0.5rem; text-align: left; }
+.ct-card-title-link { color: var(--ct-text); text-decoration: none; }
+.ct-card-title-link:hover { color: #445c3d; }
+
+.ct-search-header { border-bottom: 1px solid var(--ct-border); padding-bottom: 1rem; }
+.ct-result-count { color: var(--ct-muted); font-size: 0.85rem; margin-top: 0.25rem; margin-bottom: 0; }
+.ct-no-results-msg { color: var(--ct-accent2); font-weight: 500; }
+
+.ct-result-inner { display: flex; align-items: center; gap: 0.85rem; }
+.ct-result-thumb { width: 48px; height: 48px; object-fit: cover; border-radius: 4px; flex-shrink: 0; border: 1px solid var(--ct-border); }
+.ct-no-art-sm {
+  width: 48px; height: 48px; background: #f2eee6; border-radius: 4px;
+  border: 1px solid var(--ct-border); color: var(--ct-muted); font-size: 0.7rem; flex-shrink: 0;
+}
+.ct-no-art-lg {
+  width: 100%; height: 100%; background: #f2eee6; color: var(--ct-muted);
+  font-size: 0.85rem; letter-spacing: 0.05em; text-transform: uppercase;
+}
+.ct-result-text { flex: 1; min-width: 0; }
+.ct-result-title { font-weight: 500; font-size: 0.92rem; color: var(--ct-text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ct-result-sub { font-size: 0.78rem; color: var(--ct-muted); margin-top: 0.1rem; }
+.ct-result-sep { margin: 0 0.3rem; color: var(--ct-border); }
+
+mark.ct-highlight { background: #f5e97a; color: var(--ct-text); border-radius: 2px; padding: 0 1px; }
+
+.ct-detail-link { color: var(--ct-text); text-decoration: none; cursor: pointer; }
+.ct-detail-link:hover { text-decoration: underline; color: #445c3d; }
+.ct-edit-btn {
+  font-size: 0.78rem; color: var(--ct-muted); text-decoration: none; cursor: pointer;
+  border: 1px solid var(--ct-border); border-radius: 12px; padding: 0.2rem 0.65rem;
+  transition: color 0.15s, border-color 0.15s;
+}
+.ct-edit-btn:hover { color: var(--ct-text); border-color: var(--ct-muted); }
+
+.ct-form-page { max-width: 640px; margin: 0 auto; }
+.ct-form-card { background: var(--ct-surface); border: 1px solid var(--ct-border); border-radius: 8px; padding: 1.75rem; }
+.ct-label { font-size: 0.82rem; font-weight: 600; color: var(--ct-text); margin-bottom: 0.3rem; display: block; }
+.ct-required { color: var(--ct-accent); }
+.ct-muted-label { color: var(--ct-muted); font-weight: 400; }
+.ct-input {
+  background: var(--ct-bg); border: 1px solid var(--ct-border); color: var(--ct-text);
+  border-radius: 6px; font-size: 0.88rem; transition: border-color 0.2s, box-shadow 0.2s;
+}
+.ct-input:focus {
+  border-color: var(--ct-accent); box-shadow: 0 0 0 3px rgba(85,107,77,0.18);
+  outline: none; background: var(--ct-bg); color: var(--ct-text);
+}
+.ct-input-error { border-color: #c0392b !important; }
+.ct-textarea { resize: vertical; min-height: 90px; }
+.ct-field-error { color: #c0392b; font-size: 0.78rem; margin-top: 0.25rem; display: none; }
+
+.ct-btn-primary { background: var(--ct-accent); color: #fff; border: none; border-radius: 8px; font-size: 0.85rem; padding: 0.4rem 1.1rem; transition: background 0.15s; }
+.ct-btn-primary:hover { background: #445c3d; color: #fff; }
+.ct-btn-discard { background: var(--ct-bg); color: var(--ct-muted); border: 1px solid var(--ct-border); border-radius: 8px; font-size: 0.85rem; padding: 0.4rem 1.1rem; transition: background 0.15s; }
+.ct-btn-discard:hover { background: #efebe1; color: var(--ct-text); }
+.ct-btn-danger { background: #c0392b; color: #fff; border: none; border-radius: 8px; font-size: 0.85rem; padding: 0.4rem 1.1rem; }
+.ct-btn-danger:hover { background: #a93226; color: #fff; }
+
+.ct-success-banner {
+  background: #eaf4e6; border: 1px solid #a8d5a2; border-radius: 8px; padding: 0.75rem 1.1rem;
+  margin-bottom: 1.25rem; font-size: 0.88rem; color: #2d6a27; display: flex; align-items: center; gap: 0.75rem;
+}
+.ct-success-link { color: var(--ct-accent); font-weight: 600; text-decoration: none; cursor: pointer; }
+.ct-success-link:hover { text-decoration: underline; color: #445c3d; }
+
+.ct-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.35); z-index: 2000; display: flex; align-items: center; justify-content: center; }
+.ct-overlay.d-none { display: none !important; }
+.ct-dialog { background: var(--ct-surface); border: 1px solid var(--ct-border); border-radius: 10px; padding: 1.75rem; max-width: 400px; width: 90%; box-shadow: 0 8px 32px rgba(0,0,0,0.18); }
+.ct-dialog-msg { font-size: 0.92rem; color: var(--ct-text); margin-bottom: 1.25rem; }
+</style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-light ct-navbar">
+  <div class="container-fluid px-4">
+    <a class="navbar-brand ct-brand" id="brand-link">babájide's library</a>
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link ct-nav-link" id="add-link">+ add track</a>
+        </li>
+      </ul>
+      <div class="d-flex align-items-center ct-search-wrap">
+        <input id="searchInput" class="form-control ct-search-input" type="search" placeholder="Search tracks…" aria-label="Search" />
+        <button id="searchBtn" class="btn ct-search-btn ms-2">Search</button>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<main class="container py-5" id="content"></main>
+
+<script src="vendor/bootstrap-5.0.2.bundle.min.js"></script>
+<script src="vendor/jquery-3.6.0.min.js"></script>
+
+<script>
+// Self-contained client-side reproduction of the Flask app's four states
+// (home, search, view, add, edit) — everything below runs in the browser,
+// mirroring server.py's in-memory routes with no backend required.
+
+let songs = [
+  { id: "1", title: "Hung Up (Tracy Young's Get Up and Dance Groove)", artwork: "https://upload.wikimedia.org/wikipedia/en/3/35/Hung_Up_2005.png", artist: "Madonna", album: "Hung Up (Remixes)", year: "2005", producers: ["Tracy Young", "Stuart Price", "Madonna"], runtime: "9:03", description: "The lead single from Mother Madge's tenth studio album, with some extra flare added by the brilliant Tracy Young. 'Get Up and Dance' is an understatement for what this track will make anyone do upon listening. The original song wears its inspiration from the 80s on its sleeve, but Young's touch makes it better suited for the clubs of the naughts. She adds palpable tension in between the choruses that elicit grimaces of pleasure." },
+  { id: "2", title: "I'm Every Woman (Clivilles & Cole House Mix II)", artwork: "https://m.media-amazon.com/images/I/511doBWXA2L._UXNaN_FMjpg_QL85_.jpg", artist: "Whitney Houston", album: "I'm Every Woman / Who Do You Love (Dance Vault Mixes)", year: "1993", producers: ["Clivillés & Cole", "Robert Clivillés", "David Cole", "Narada Michael Walden"], runtime: "10:55", description: "Such a good song, oh my God. First of all, I love Whitney Houston. Beautiful inside and out, and this song, despite being a remix of a cover, reflects her elegance in whatever room it's played in. Only one note, two words: volume up!" },
+  { id: "3", title: "Midnight Sun", artwork: "https://m.media-amazon.com/images/I/51uwCGYltnL._UXNaN_FMjpg_QL85_.jpg", artist: "Zara Larsson & Muni Long", album: "Midnight Sun", year: "2025", producers: ["Margo XS", "MNEK"], runtime: "3:15", description: "I've been pretty into DnB recently, so this smash hit came just in time for me. I like the Zara Larsson stuff, I think she's cute! Muni Long, though? She turned this joint from cute to booty-bouncing. The percussion, the vocals.. I'm in heaven! I love women." },
+  { id: "4", title: "b2b featuring tinashe", artwork: "https://i.scdn.co/image/ab67616d0000b273d0fd1c9f5dd1f5c07ebab6bd", artist: "Charli xcx", album: "Brat and it's completely different but also still brat", year: "2024", producers: ["Finn Keane", "LIOHN"], runtime: "2:58", description: "" },
+  { id: "5", title: "Supermodel (You Better Work) [Couture Mix]", artwork: "https://upload.wikimedia.org/wikipedia/en/1/15/Supermodelsingle.jpg?utm_source=en.wikipedia.org&utm_campaign=index&utm_content=original", artist: "RuPaul", album: "Supermodel (You Better Work / House of Love)", year: "1992", producers: ["Eric Kupper"], runtime: "6:15", description: "Sashay, shantay! Say what you want, but RuPaul was, like, THE queer person people knew at a certain point, if that makes sense. It might not, but this song being such an earworm does. You can't listen for too long without wanting to strut and werk it the haus down boots." },
+  { id: "6", title: "I Feel So Free", artwork: "https://images.genius.com/b4b0e6e920bcd1bb2613384184ed89d8.1000x1000x1.jpg", artist: "Madonna", album: "CONFESSIONS II", year: "2026", producers: ["Madonna", "Stuart Price"], runtime: "4:05", description: "Queen mother Madonna. To be honest, I didn't grow up being a fan, but I recently tapped into her discography and gained the utmost respect for the hag supreme. And she's still got it! This song is sick, addictive, even contagious in how it'll infect anybody who listens with a groove." },
+  { id: "7", title: "Everybody Everybody (Le Freak Mix)", artwork: "https://i1.sndcdn.com/artworks-UCpXn4JknTh6-0-t500x500.jpg", artist: "Black Box", album: "Everybody Everybody", year: "1990", producers: ["DJ Lelewel", "Daniele Davoli", "Mirko Limoni", "Valerio Semplici"], runtime: "5:20", description: "A classic, honey! The original song is also amazing, but the touch that DJ Lelewel adds is one I've found that I can't live without. The song is well-named in that it'll make everybody, EVERYBODY want to get up out their seat." },
+  { id: "8", title: "Who Do You Think You Are (Morales Club Mix)", artwork: "https://m.media-amazon.com/images/I/71OCRgdhMoL._UF1000,1000_QL80_.jpg", artist: "Spice Girls", album: "Who Do You Think You Are / Mama", year: "1997", producers: ["Absolute", "David Morales"], runtime: "9:30", description: "I recently watched Spice World, the 1997 mockumentary that follows the illustrious Spice Girls on tour as hijinks ensue. It's now sitting pretty in my top 4 on Letterboxd! This song comes on briefly during the club scene in the movie, but even the brief taste left me searching for more. A great song, made even greater by David Goatrales. " },
+  { id: "9", title: "Bomb-Jack", artwork: "https://i.discogs.com/_oUb8YE9uiEiirs0Kr0D92G58ZD9ArxoURacWBet5Ck/rs:fit/g:sm/q:90/h:599/w:600/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9SLTgxMjUw/LTE2NTI2MjI4MTgt/MTQ2Ni5qcGVn.jpeg", artist: "K90", album: "Bomb-Jack / Fuse", year: "2001", producers: ["Mark Doggett"], runtime: "8:25", description: "Don't know much about the artist, but please know that this song is too fire. If you don't like oontz oontz, then this might not be for you, but if so, then more for me! I've really been into this techno, trance vibe right now, so this is probably going to end up on the USB." },
+  { id: "10", title: "Everytime We Touch (Club Mix)", artwork: "https://i.scdn.co/image/ab67616d0000b273e0c8b75abb6704283aa645aa", artist: "Cascada", album: "Everytime We Touch", year: "2005", producers: ["DJ Manian", "Yanou"], runtime: "5:30", description: "A childhood classic, but for my young adulthood! I love going to the club with my friends and dancing all night long, and I have for a while too. I was doing it on ROBLOX to this song when I was younger, but now I get to do it in real life to a bodacious, hip-switching track like this. Dreams come true!" },
+];
+
+function escapeHtml(str) {
+  return $("<div>").text(str == null ? "" : String(str)).html();
+}
+
+function highlight(text, query) {
+  const escaped = escapeHtml(text);
+  if (!query || !text) return escaped;
+  const escapedQuery = query.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  return escaped.replace(new RegExp("(" + escapedQuery + ")", "ig"), '<mark class="ct-highlight">$1</mark>');
+}
+
+function getSongById(id) {
+  return songs.find((s) => s.id === id) || null;
+}
+
+function getNextId() {
+  if (songs.length === 0) return "1";
+  return String(Math.max(...songs.map((s) => parseInt(s.id, 10))) + 1);
+}
+
+function navigate(hash) {
+  window.location.hash = hash;
+}
+
+function setActiveNav(route) {
+  $("#add-link").toggleClass("ct-nav-active", route === "add");
+}
+
+// — Home —
+function renderHome() {
+  setActiveNav("home");
+  const popularIds = ["1", "2", "3"];
+  const cards = popularIds.map((id) => {
+    const s = getSongById(id);
+    if (!s) return "";
+    const artworkHtml = s.artwork
+      ? `<a href="#/view/${id}"><img src="${escapeHtml(s.artwork)}" class="ct-card-img" alt="${escapeHtml(s.title)} artwork by ${escapeHtml(s.artist)}" /></a>`
+      : `<div class="ct-card-img ct-no-art d-flex align-items-center justify-content-center"><span>No Art</span></div>`;
+    const descSnippet = s.description
+      ? `<p class="ct-card-desc">${escapeHtml(s.description.substring(0, 100))}…</p>`
+      : "";
+    return `
+      <div class="col-12 col-sm-6 col-md-4">
+        <div class="ct-card h-100">
+          ${artworkHtml}
+          <div class="ct-card-body">
+            <div class="ct-card-title">
+              <a href="#/view/${id}" class="ct-card-title-link">${escapeHtml(s.title || "(untitled)")}</a>
+            </div>
+            <div class="ct-card-artist">${escapeHtml(s.artist || "")}</div>
+            <div class="ct-card-meta-row">
+              <span class="ct-card-year">${escapeHtml(s.year || "")}</span>
+              <span class="ct-card-runtime">${escapeHtml(s.runtime || "")}</span>
+            </div>
+            ${descSnippet}
+          </div>
+        </div>
+      </div>`;
+  }).join("");
+
+  $("#content").html(`
+    <div class="ct-hero text-center mb-5">
+      <h1 class="ct-page-title">babájide's library</h1>
+      <p class="ct-subtitle">a personal archive of tracks that make me move — remixes, club edits, and dance-floor essentials</p>
+    </div>
+    <h2 class="ct-section-label mb-3">popular this week</h2>
+    <div class="row g-4 justify-content-center mb-5">${cards}</div>
+  `);
+}
+
+// — Search —
+function renderSearch(query) {
+  setActiveNav("search");
+  const q = (query || "").toLowerCase();
+  const results = songs.filter((s) =>
+    s.title.toLowerCase().includes(q) ||
+    s.artist.toLowerCase().includes(q) ||
+    s.album.toLowerCase().includes(q) ||
+    (s.description || "").toLowerCase().includes(q) ||
+    (s.producers || []).some((p) => p.toLowerCase().includes(q))
+  );
+
+  let body;
+  if (results.length) {
+    body = `<ul class="ct-results-list">${results.map((song) => `
+      <li class="ct-result-item">
+        <a href="#/view/${song.id}" class="ct-result-link">
+          <div class="ct-result-inner">
+            ${song.artwork
+              ? `<img src="${escapeHtml(song.artwork)}" class="ct-result-thumb" alt="${escapeHtml(song.title)} artwork" />`
+              : `<div class="ct-result-thumb ct-no-art-sm d-flex align-items-center justify-content-center"><span>—</span></div>`}
+            <div class="ct-result-text">
+              <div class="ct-result-title">${highlight(song.title, query)}</div>
+              <div class="ct-result-sub">
+                <span>${highlight(song.artist, query)}</span>
+                <span class="ct-result-sep">·</span>
+                <span>${highlight(song.album, query)}</span>
+                <span class="ct-result-sep">·</span>
+                <span>${escapeHtml(song.year)}</span>
+                ${song.producers && song.producers.length ? `<span class="ct-result-sep">·</span><span>${highlight(song.producers.join(", "), query)}</span>` : ""}
+              </div>
+            </div>
+          </div>
+        </a>
+      </li>`).join("")}</ul>`;
+  } else {
+    body = "";
+  }
+
+  $("#content").html(`
+    <div class="ct-search-header mb-4">
+      <h2 class="ct-page-title">Results for <span class="ct-query-highlight">"${escapeHtml(query)}"</span></h2>
+      ${results.length
+        ? `<p class="ct-result-count">${results.length} track${results.length !== 1 ? "s" : ""} found</p>`
+        : `<p class="ct-result-count ct-no-results-msg">No matches found for "${escapeHtml(query)}"</p>`}
+    </div>
+    ${body}
+  `);
+}
+
+// — View —
+function renderView(id) {
+  setActiveNav("view");
+  const song = getSongById(id);
+  if (!song) {
+    $("#content").html(`<p class="ct-no-results">Song not found.</p>`);
+    return;
+  }
+  $("#content").html(`
+    <div class="ct-song-card">
+      <div class="ct-song-card-left">
+        ${song.artwork
+          ? `<img src="${escapeHtml(song.artwork)}" alt="${escapeHtml(song.title)} artwork by ${escapeHtml(song.artist)}" />`
+          : `<div class="ct-no-art-lg d-flex align-items-center justify-content-center"><span>No Artwork</span></div>`}
+      </div>
+      <div class="ct-song-card-right">
+        <h1 class="ct-song-title">${escapeHtml(song.title)}</h1>
+        <div class="ct-song-meta">
+          <span class="ct-song-year">${escapeHtml(song.year)}</span>
+          <span class="ct-song-artist">${escapeHtml(song.artist)}</span>
+          <span class="ct-song-runtime">${escapeHtml(song.runtime)}</span>
+        </div>
+        ${song.description ? `<div class="ct-song-desc"><p>${escapeHtml(song.description)}</p></div>` : ""}
+        <div class="ct-song-details">
+          <div class="ct-detail-item">
+            <h6>Album</h6>
+            <p><a href="#/search?q=${encodeURIComponent(song.album)}" class="ct-detail-link">${escapeHtml(song.album)}</a></p>
+          </div>
+          <div class="ct-detail-item">
+            <h6>Producers</h6>
+            <p>${song.producers && song.producers.length
+              ? song.producers.map((p) => `<a href="#/search?q=${encodeURIComponent(p)}" class="ct-detail-link">${escapeHtml(p)}</a>`).join(", ")
+              : "—"}</p>
+          </div>
+          <div class="ct-detail-item">
+            <h6>Artist</h6>
+            <p><a href="#/search?q=${encodeURIComponent(song.artist)}" class="ct-detail-link">${escapeHtml(song.artist)}</a></p>
+          </div>
+        </div>
+        <div class="mt-4">
+          <a href="#/edit/${song.id}" class="ct-edit-btn">edit</a>
+        </div>
+      </div>
+    </div>
+  `);
+}
+
+// — Add —
+function renderAdd() {
+  setActiveNav("add");
+  $("#content").html(`
+    <div class="ct-form-page">
+      <div id="success-banner" class="ct-success-banner d-none">
+        <span>New item successfully created.</span>
+        <a id="see-it-link" href="#" class="ct-success-link">See it here →</a>
+      </div>
+
+      <h2 class="ct-page-title mb-1">add a track</h2>
+      <p class="ct-subtitle mb-4">fill in the details below to add a new entry to the library</p>
+
+      <div class="ct-form-card">
+        <div class="mb-3">
+          <label for="f-title" class="ct-label">Title <span class="ct-required">*</span></label>
+          <input id="f-title" type="text" class="form-control ct-input" placeholder="e.g. Hung Up (Club Mix)" />
+          <div class="ct-field-error" id="err-title"></div>
+        </div>
+        <div class="mb-3">
+          <label for="f-artist" class="ct-label">Artist <span class="ct-required">*</span></label>
+          <input id="f-artist" type="text" class="form-control ct-input" placeholder="e.g. Madonna" />
+          <div class="ct-field-error" id="err-artist"></div>
+        </div>
+        <div class="mb-3">
+          <label for="f-album" class="ct-label">Album <span class="ct-required">*</span></label>
+          <input id="f-album" type="text" class="form-control ct-input" placeholder="e.g. Hung Up (Remixes)" />
+          <div class="ct-field-error" id="err-album"></div>
+        </div>
+        <div class="row g-3 mb-3">
+          <div class="col-6">
+            <label for="f-year" class="ct-label">Year <span class="ct-required">*</span></label>
+            <input id="f-year" type="text" class="form-control ct-input" placeholder="e.g. 2005" />
+            <div class="ct-field-error" id="err-year"></div>
+          </div>
+          <div class="col-6">
+            <label for="f-runtime" class="ct-label">Runtime <span class="ct-required">*</span></label>
+            <input id="f-runtime" type="text" class="form-control ct-input" placeholder="e.g. 9:03" />
+            <div class="ct-field-error" id="err-runtime"></div>
+          </div>
+        </div>
+        <div class="mb-3">
+          <label for="f-producers" class="ct-label">Producers <span class="ct-muted-label">(comma-separated)</span></label>
+          <input id="f-producers" type="text" class="form-control ct-input" placeholder="e.g. Tracy Young, Stuart Price" />
+        </div>
+        <div class="mb-3">
+          <label for="f-artwork" class="ct-label">Artwork URL</label>
+          <input id="f-artwork" type="text" class="form-control ct-input" placeholder="https://…" />
+        </div>
+        <div class="mb-4">
+          <label for="f-description" class="ct-label">Description</label>
+          <textarea id="f-description" class="form-control ct-input ct-textarea" rows="4" placeholder="What do you love about this track?"></textarea>
+        </div>
+        <button id="submit-btn" class="btn ct-btn-primary">Submit</button>
+      </div>
+    </div>
+  `);
+
+  function clearErrors() {
+    $(".ct-field-error").text("").hide();
+    $(".ct-input").removeClass("ct-input-error");
+  }
+  function showErrors(errors) {
+    clearErrors();
+    Object.entries(errors).forEach(([field, msg]) => {
+      $("#err-" + field).text(msg).show();
+      $("#f-" + field).addClass("ct-input-error");
+    });
+    const firstField = Object.keys(errors)[0];
+    if (firstField) $("#f-" + firstField).focus();
+  }
+  function validate(payload) {
+    const errors = {};
+    if (!payload.title) errors.title = "Title is required.";
+    if (!payload.artist) errors.artist = "Artist is required.";
+    if (!payload.album) errors.album = "Album is required.";
+    if (!payload.year) errors.year = "Year is required.";
+    else if (!/^\d+$/.test(payload.year)) errors.year = "Year must be a number.";
+    if (!payload.runtime) errors.runtime = "Runtime is required.";
+    return errors;
+  }
+
+  $("#submit-btn").on("click", function () {
+    const payload = {
+      title: $("#f-title").val().trim(),
+      artist: $("#f-artist").val().trim(),
+      album: $("#f-album").val().trim(),
+      year: $("#f-year").val().trim(),
+      runtime: $("#f-runtime").val().trim(),
+      producers: $("#f-producers").val().trim(),
+      artwork: $("#f-artwork").val().trim(),
+      description: $("#f-description").val().trim(),
+    };
+    const errors = validate(payload);
+    if (Object.keys(errors).length) {
+      showErrors(errors);
+      return;
+    }
+    const newSong = {
+      id: getNextId(),
+      title: payload.title,
+      artist: payload.artist,
+      album: payload.album,
+      year: payload.year,
+      runtime: payload.runtime,
+      producers: payload.producers ? payload.producers.split(",").map((p) => p.trim()).filter(Boolean) : [],
+      artwork: payload.artwork,
+      description: payload.description,
+    };
+    songs.push(newSong);
+
+    clearErrors();
+    $("#see-it-link").attr("href", "#/view/" + newSong.id);
+    $("#success-banner").removeClass("d-none");
+    $("#f-title, #f-artist, #f-album, #f-year, #f-runtime, #f-producers, #f-artwork, #f-description").val("");
+    $("#f-title").focus();
+  });
+}
+
+// — Edit —
+function renderEdit(id) {
+  setActiveNav("edit");
+  const song = getSongById(id);
+  if (!song) {
+    $("#content").html(`<p class="ct-no-results">Song not found.</p>`);
+    return;
+  }
+  $("#content").html(`
+    <div class="ct-form-page">
+      <h2 class="ct-page-title mb-1">edit track</h2>
+      <p class="ct-subtitle mb-4">update the details below and submit to save your changes</p>
+
+      <div class="ct-form-card">
+        <div class="mb-3">
+          <label for="f-title" class="ct-label">Title <span class="ct-required">*</span></label>
+          <input id="f-title" type="text" class="form-control ct-input" value="${escapeHtml(song.title)}" />
+          <div class="ct-field-error" id="err-title"></div>
+        </div>
+        <div class="mb-3">
+          <label for="f-artist" class="ct-label">Artist <span class="ct-required">*</span></label>
+          <input id="f-artist" type="text" class="form-control ct-input" value="${escapeHtml(song.artist)}" />
+          <div class="ct-field-error" id="err-artist"></div>
+        </div>
+        <div class="mb-3">
+          <label for="f-album" class="ct-label">Album <span class="ct-required">*</span></label>
+          <input id="f-album" type="text" class="form-control ct-input" value="${escapeHtml(song.album)}" />
+          <div class="ct-field-error" id="err-album"></div>
+        </div>
+        <div class="row g-3 mb-3">
+          <div class="col-6">
+            <label for="f-year" class="ct-label">Year <span class="ct-required">*</span></label>
+            <input id="f-year" type="text" class="form-control ct-input" value="${escapeHtml(song.year)}" />
+            <div class="ct-field-error" id="err-year"></div>
+          </div>
+          <div class="col-6">
+            <label for="f-runtime" class="ct-label">Runtime <span class="ct-required">*</span></label>
+            <input id="f-runtime" type="text" class="form-control ct-input" value="${escapeHtml(song.runtime)}" />
+            <div class="ct-field-error" id="err-runtime"></div>
+          </div>
+        </div>
+        <div class="mb-3">
+          <label for="f-producers" class="ct-label">Producers <span class="ct-muted-label">(comma-separated)</span></label>
+          <input id="f-producers" type="text" class="form-control ct-input" value="${escapeHtml((song.producers || []).join(", "))}" />
+        </div>
+        <div class="mb-3">
+          <label for="f-artwork" class="ct-label">Artwork URL</label>
+          <input id="f-artwork" type="text" class="form-control ct-input" value="${escapeHtml(song.artwork || "")}" />
+        </div>
+        <div class="mb-4">
+          <label for="f-description" class="ct-label">Description</label>
+          <textarea id="f-description" class="form-control ct-input ct-textarea" rows="4">${escapeHtml(song.description || "")}</textarea>
+        </div>
+        <div class="d-flex gap-3">
+          <button id="submit-btn" class="btn ct-btn-primary">Submit</button>
+          <button id="discard-btn" class="btn ct-btn-discard">Discard Changes</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="discard-overlay" class="ct-overlay d-none">
+      <div class="ct-dialog">
+        <p class="ct-dialog-msg">Are you sure you want to discard your changes? Any edits will be lost.</p>
+        <div class="d-flex gap-3 justify-content-end">
+          <button id="discard-cancel" class="btn ct-btn-discard">Keep Editing</button>
+          <button id="discard-confirm" class="btn ct-btn-danger">Yes, Discard</button>
+        </div>
+      </div>
+    </div>
+  `);
+
+  function clearErrors() {
+    $(".ct-field-error").text("").hide();
+    $(".ct-input").removeClass("ct-input-error");
+  }
+  function showErrors(errors) {
+    clearErrors();
+    Object.entries(errors).forEach(([field, msg]) => {
+      $("#err-" + field).text(msg).show();
+      $("#f-" + field).addClass("ct-input-error");
+    });
+    const firstField = Object.keys(errors)[0];
+    if (firstField) $("#f-" + firstField).focus();
+  }
+  function validate(payload) {
+    const errors = {};
+    if (!payload.title) errors.title = "Title is required.";
+    if (!payload.artist) errors.artist = "Artist is required.";
+    if (!payload.album) errors.album = "Album is required.";
+    if (!payload.year) errors.year = "Year is required.";
+    else if (!/^\d+$/.test(payload.year)) errors.year = "Year must be a number.";
+    if (!payload.runtime) errors.runtime = "Runtime is required.";
+    return errors;
+  }
+
+  $("#submit-btn").on("click", function () {
+    const payload = {
+      title: $("#f-title").val().trim(),
+      artist: $("#f-artist").val().trim(),
+      album: $("#f-album").val().trim(),
+      year: $("#f-year").val().trim(),
+      runtime: $("#f-runtime").val().trim(),
+      producers: $("#f-producers").val().trim(),
+      artwork: $("#f-artwork").val().trim(),
+      description: $("#f-description").val().trim(),
+    };
+    const errors = validate(payload);
+    if (Object.keys(errors).length) {
+      showErrors(errors);
+      return;
+    }
+    song.title = payload.title;
+    song.artist = payload.artist;
+    song.album = payload.album;
+    song.year = payload.year;
+    song.runtime = payload.runtime;
+    song.producers = payload.producers ? payload.producers.split(",").map((p) => p.trim()).filter(Boolean) : [];
+    song.artwork = payload.artwork;
+    song.description = payload.description;
+    navigate("/view/" + song.id);
+  });
+
+  $("#discard-btn").on("click", function () {
+    $("#discard-overlay").removeClass("d-none");
+  });
+  $("#discard-cancel").on("click", function () {
+    $("#discard-overlay").addClass("d-none");
+  });
+  $("#discard-confirm").on("click", function () {
+    navigate("/view/" + song.id);
+  });
+}
+
+// — Router —
+function router() {
+  const hash = window.location.hash.replace(/^#/, "") || "/";
+  const [path, queryString] = hash.split("?");
+  const params = new URLSearchParams(queryString || "");
+  const parts = path.split("/").filter(Boolean);
+
+  if (parts.length === 0) {
+    renderHome();
+  } else if (parts[0] === "search") {
+    renderSearch(params.get("q") || "");
+  } else if (parts[0] === "view" && parts[1]) {
+    renderView(parts[1]);
+  } else if (parts[0] === "add") {
+    renderAdd();
+  } else if (parts[0] === "edit" && parts[1]) {
+    renderEdit(parts[1]);
+  } else {
+    renderHome();
+  }
+  window.scrollTo(0, 0);
+}
+
+function doSearch() {
+  const q = $("#searchInput").val();
+  if (q.trim() === "") {
+    $("#searchInput").val("").focus();
+    return;
+  }
+  navigate("/search?q=" + encodeURIComponent(q));
+}
+
+$("#searchBtn").on("click", doSearch);
+$("#searchInput").on("keydown", function (e) {
+  if (e.key === "Enter") {
+    e.preventDefault();
+    doSearch();
+  }
+});
+$("#brand-link").on("click", function () { navigate("/"); });
+$("#add-link").on("click", function () { navigate("/add"); });
+
+window.addEventListener("hashchange", router);
+router();
+</script>
+</body>
+</html>

@@ -33,13 +33,20 @@ function figmaEmbedUrl(figmaUrl) {
 // "/work/my-project.jpg", dropped in public/work/) once you have an
 // image — it doubles as the large image on the project's detail page —
 // until then a placeholder tile is shown in both places. `embedUrl`
-// (built with figmaEmbedUrl) takes over from `thumbnail` in both spots
-// when a live Figma embed is more useful than a static image.
+// (built with figmaEmbedUrl, or a BASE_URL-prefixed path like
+// `${import.meta.env.BASE_URL.replace(/\/$/, "")}/work/my-demo.html` for a
+// self-hosted static page dropped in public/work/ — the prefix matters
+// since this becomes an iframe `src`, which Vite doesn't rewrite for the
+// GitHub Pages subpath the way it does index.html; strip the trailing
+// slash first since BASE_URL isn't guaranteed to end with one) takes over
+// from `thumbnail` in both spots when a live embed is more useful than a
+// static image.
 //
 // `context`/`problem`/`process`/`outcome` are the four case-study blocks
 // shown on the detail page. `processImages` holds paths for the marquee
 // under the Process block (public/work/, like thumbnail); leave it empty
-// for placeholder tiles.
+// for placeholder tiles. Set `hideProcessMarquee: true` to drop the
+// marquee under Process entirely instead of showing placeholder tiles.
 export const PROJECTS = [
   {
     id: 1,
@@ -62,6 +69,8 @@ export const PROJECTS = [
     categories: ["school", "ui-ux"],
     year: "2026",
     thumbnail: null,
+    embedUrl: `${import.meta.env.BASE_URL.replace(/\/$/, "")}/work/babajides-library.html`,
+    hideProcessMarquee: true,
     context: "In the spring of 2026, I took a class called User Interface Design taught by professor Celeste Layne. For our midterm, I built a Flask-based personal music catalog, titled “babájide's library.”",
     problem: "We had to demonstrate our design skills and build a fully-featured interface with the following requisites:\nFour distinct states (home, search, add, edit)\nClear information hierarchy through Gestalt-based grouping\nA simple, limited color palette (base, accent, light grey, dark grey)\nAccessible alt text\nScannable search feedback\nAJAX-driven forms\nInline validation\nConfirmation dialogs before destructive actions",
     process: "I used a warmer, sage green color palette alongside Bebas Neue and DM Sans to create a more personal feel for my project. The home page leads with a hero and tagline into a \"popular this week\" card grid; search results highlight matched substrings inline across title, artist, album, description, and producer fields; add and edit forms validate per field, show a success banner with a direct link to the new entry, clear themselves, and refocus the first input for fast re-entry; discarding an edit prompts a confirmation dialog instead of silently dropping changes. I built the interface in Flask and Jinja2, styled it with a custom CSS variable system layered over Bootstrap's grid, and used jQuery/AJAX for the adding and editing of data. I also wrote and curated the content of the library (real songs with original descriptions).",
