@@ -2,11 +2,23 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import Reveal from "./Reveal";
 import Flipbook from "./Flipbook";
+import { useLightbox } from "./Lightbox";
 import { CATEGORIES, CATEGORY_LABELS, PRIMARY_CATEGORIES, PROJECTS } from "./projectsData";
 import "./Work.css";
 
+function ZoomIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+      <circle cx="11" cy="11" r="7" />
+      <path d="M21 21l-4.35-4.35" strokeLinecap="round" />
+      <path d="M11 8v6M8 11h6" strokeLinecap="round" />
+    </svg>
+  );
+}
+
 function Work() {
   const [filter, setFilter] = useState("all");
+  const openLightbox = useLightbox();
   const projects =
     filter === "all"
       ? PROJECTS
@@ -70,6 +82,20 @@ function Work() {
                 <span className="work-thumb-placeholder">
                   {String(i + 1).padStart(2, "0")}
                 </span>
+              )}
+              {project.thumbnail && (
+                <button
+                  type="button"
+                  className="work-thumb-zoom"
+                  aria-label={`Zoom in on ${project.title} image`}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    openLightbox(project.thumbnail, project.title);
+                  }}
+                >
+                  <ZoomIcon />
+                </button>
               )}
             </div>
             <div className="work-card-meta">

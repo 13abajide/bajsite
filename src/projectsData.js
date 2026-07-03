@@ -128,7 +128,10 @@ export const PROJECTS = [
     problem: "I was given about a week to design the 2025 digital special edition for LGBTQ+ History Month with llitte to no direction besides the general layout of the page.",
     process: "I first created a moodboard with images, colors, and typography to express to the team what I thought the general vibe of the special edition should be. Once I got the OK from my supervisor, I created a low-fidelity prototype of the site on Figma. My supervisor built upon this to make it higher-fidelity, and I added finishing touches before sending the Figma file over to the Engineering team so they could turn the design into code.",
     outcome: "The head of the Product team tod me that this special edition was (in her opinion, of course) our best one yet, and everyone else on the team was similarly happy with the result.",
-    processImages: [],
+    processImages: [
+      publicAsset("work/spectator-lgbtq-moodboard.png"),
+      publicAsset("work/spectator-lgbtq-page.png"),
+    ],
   },
   {
     id: 3,

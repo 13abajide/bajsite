@@ -3,6 +3,7 @@ import { Link, Navigate, useParams } from "react-router-dom";
 import Reveal from "./Reveal";
 import Flipbook from "./Flipbook";
 import BillFlip from "./BillFlip";
+import { ZoomableImage } from "./Lightbox";
 import { CATEGORIES, PROJECTS } from "./projectsData";
 import "./WorkDetail.css";
 
@@ -58,6 +59,13 @@ function WorkDetail() {
       ? project.processImages
       : Array(PLACEHOLDER_MARQUEE_COUNT).fill(null);
 
+  // Figma prototypes and self-hosted demo pages stay interactive inline;
+  // a real external site (e.g. the live Spectator edition) opens in a new
+  // tab instead, since visiting it beats poking around inside an iframe.
+  const isExternalSite =
+    project.embedUrl?.startsWith("http") &&
+    !project.embedUrl.includes("figma.com");
+
   return (
     <section className="section work-detail">
       <Reveal as={Link} to="/work" className="work-detail-back">
@@ -69,14 +77,30 @@ function WorkDetail() {
 
       <Reveal className="work-detail-hero">
         {project.embedUrl ? (
-          <iframe
-            src={project.embedUrl}
-            title={`${project.title} — ${
-              project.embedUrl.includes("figma.com") ? "Figma" : "Live demo"
-            }`}
-            className="work-detail-hero-media"
-            allowFullScreen
-          />
+          isExternalSite ? (
+            <a
+              href={project.embedUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="work-detail-hero-media work-detail-hero-link"
+            >
+              <iframe
+                src={project.embedUrl}
+                title={`${project.title} — Live site`}
+                tabIndex={-1}
+              />
+              <span className="work-detail-hero-visit">Visit site ↗</span>
+            </a>
+          ) : (
+            <iframe
+              src={project.embedUrl}
+              title={`${project.title} — ${
+                project.embedUrl.includes("figma.com") ? "Figma" : "Live demo"
+              }`}
+              className="work-detail-hero-media"
+              allowFullScreen
+            />
+          )
         ) : project.flipbookImages ? (
           <Flipbook
             images={project.flipbookImages}
@@ -90,7 +114,7 @@ function WorkDetail() {
             className="work-detail-hero-media"
           />
         ) : project.heroImage || project.thumbnail ? (
-          <img
+          <ZoomableImage
             src={project.heroImage || project.thumbnail}
             alt=""
             className="work-detail-hero-media"
@@ -158,7 +182,7 @@ function WorkDetail() {
                         key={i}
                       >
                         {src ? (
-                          <img src={src} alt="" />
+                          <ZoomableImage src={src} alt="" />
                         ) : (
                           <ImagePlaceholderIcon />
                         )}

@@ -95,6 +95,38 @@
   color: var(--ink-faint);
 }
 
+.work-thumb-zoom {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  background: var(--paper);
+  color: var(--ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transform: translateY(4px);
+  transition: opacity 0.2s ease, transform 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+.work-thumb-zoom svg {
+  width: 16px;
+  height: 16px;
+}
+.work-card:hover .work-thumb-zoom,
+.work-card:focus-within .work-thumb-zoom {
+  opacity: 1;
+  transform: translateY(0);
+}
+.work-thumb-zoom:hover,
+.work-thumb-zoom:focus-visible {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
 .work-card-meta {
   display: flex;
   align-items: baseline;
