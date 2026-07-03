@@ -26,6 +26,13 @@ function figmaEmbedUrl(figmaUrl) {
   )}`;
 }
 
+// `thumbnail`/`processImages` paths are root-relative (e.g. "/work/foo.jpg")
+// but the site is deployed under a subpath, so they need Vite's BASE_URL
+// prefixed before being used as an <img> src.
+export function withBase(path) {
+  return path ? `${import.meta.env.BASE_URL}${path.replace(/^\//, "")}` : path;
+}
+
 // Replace each entry below with a real project. `categories` is an array
 // of one or more of "personal", "community", "school", "ui-ux", or
 // "graphic-design" — a project can fall under multiple at once, and it'll
@@ -54,7 +61,13 @@ export const PROJECTS = [
     problem: "When I joined the team, Doppel Market did not have a defined brand identity. This was most apparent in our website at the time, as it felt generic and disconnected from who we were. The same could be said about our logo, which was the only unique asset that had been created thus far in terms of product design.",
     process: "I sat down with the founders to learn about their story, principles, and goals for the company. I used this to create sketches of what I thought the website should look like to better reflect the ethos of the brand and showed these to the team to get feedback.",
     outcome: "Firstly, I decided to change the color of the company logo. Perhaps this seems like an inconsequential tweak, but this ended up realigning the brand's entire color story with the founders' vision. I used this new and improved color palette to build a high-fidelity prototype of the website on Figma, and worked with the engineering team to implement my design just in time for a conference where the founders presented it to potential stakeholders. I also pushed for the development of a brand identity document so it'd be easier in the future to build upon the foundation I helped to establish.",
-    processImages: [],
+    processImages: [
+      "/work/doppel-process-1.jpg",
+      "/work/doppel-process-2.jpg",
+      "/work/doppel-process-3.jpg",
+      "/work/doppel-process-4.jpg",
+      "/work/doppel-process-5.jpg",
+    ],
   },
   {
     id: 4,

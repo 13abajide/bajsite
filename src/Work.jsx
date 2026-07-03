@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import Reveal from "./Reveal";
-import { CATEGORIES, CATEGORY_LABELS, PRIMARY_CATEGORIES, PROJECTS } from "./projectsData";
+import { CATEGORIES, CATEGORY_LABELS, PRIMARY_CATEGORIES, PROJECTS, withBase } from "./projectsData";
 import "./Work.css";
 
 function Work() {
@@ -52,7 +52,7 @@ function Work() {
                   tabIndex={-1}
                 />
               ) : project.thumbnail ? (
-                <img src={project.thumbnail} alt="" />
+                <img src={withBase(project.thumbnail)} alt="" />
               ) : (
                 <span className="work-thumb-placeholder">
                   {String(i + 1).padStart(2, "0")}

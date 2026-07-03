@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, Navigate, useParams } from "react-router-dom";
 import Reveal from "./Reveal";
-import { CATEGORIES, PROJECTS } from "./projectsData";
+import { CATEGORIES, PROJECTS, withBase } from "./projectsData";
 import "./WorkDetail.css";
 
 // Order here doubles as the cycle order for the arrows below.
@@ -75,7 +75,7 @@ function WorkDetail() {
           />
         ) : project.thumbnail ? (
           <img
-            src={project.thumbnail}
+            src={withBase(project.thumbnail)}
             alt=""
             className="work-detail-hero-media"
           />
@@ -142,7 +142,7 @@ function WorkDetail() {
                         key={i}
                       >
                         {src ? (
-                          <img src={src} alt="" />
+                          <img src={withBase(src)} alt="" />
                         ) : (
                           <ImagePlaceholderIcon />
                         )}
