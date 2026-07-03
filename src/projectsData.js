@@ -26,6 +26,13 @@ function figmaEmbedUrl(figmaUrl) {
   )}`;
 }
 
+// The site is deployed under a /bajsite/ subpath (see vite.config.js's
+// `base`), so public/ assets need that prefix — unlike index.html, plain
+// string paths in JS don't get it rewritten in automatically.
+function asset(path) {
+  return `${import.meta.env.BASE_URL}${path.replace(/^\//, "")}`;
+}
+
 // Replace each entry below with a real project. `categories` is an array
 // of one or more of "personal", "community", "school", "ui-ux", or
 // "graphic-design" — a project can fall under multiple at once, and it'll
@@ -60,7 +67,7 @@ export const PROJECTS = [
       "/work/doppel-process-3.jpg",
       "/work/doppel-process-4.jpg",
       "/work/doppel-process-5.jpg",
-    ],
+    ].map(asset),
   },
   {
     id: 4,
