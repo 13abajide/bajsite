@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useLightbox } from "./Lightbox";
 import "./Flipbook.css";
 
@@ -23,93 +23,101 @@ function ChevronIcon({ direction }) {
   );
 }
 
-// A magazine reader styled after Issuu's embed: the first image is a
-// standalone cover, and "next" opens it into a two-page spread built from
-// the rest — bound-edge shading, a page-curl turn animation (both for the
-// cover opening/closing and for turning pages within the spread), side
-// nav arrows, and a page counter. Drops into the same slot an
+// Builds the page sequence: the first and last images stand alone as
+// front/back covers, and everything between is paired up two at a time
+// (a trailing odd one out gets a blank partner instead of being crammed
+// in with a neighbor).
+function buildSlides(images) {
+  const total = images.length;
+  if (total === 0) return [];
+  if (total === 1) return [{ kind: "single", indices: [0] }];
+
+  const middleCount = total - 2;
+  const slides = [{ kind: "single", indices: [0] }];
+  for (let i = 0; i < middleCount; i += 2) {
+    const left = 1 + i;
+    const right = i + 1 < middleCount ? left + 1 : null;
+    slides.push({ kind: "pair", indices: [left, right] });
+  }
+  slides.push({ kind: "single", indices: [total - 1] });
+  return slides;
+}
+
+// A magazine reader styled after Issuu's embed. The page sequence loops
+// continuously in both directions (front cover -> paired spreads -> back
+// cover -> front cover again), each turn using a page-curl 3D animation,
+// with side nav arrows and a page counter. Drops into the same slot an
 // <img>/<iframe> thumbnail would. `compact` (the small Work grid tile)
 // hides the nav/counter chrome and just autoplays.
 function Flipbook({ images, title, className, compact = false, pageAspectRatio = 0.7 }) {
-  const total = images.length;
-  const nonCoverTotal = Math.max(total - 1, 0);
-  const hasSpread = nonCoverTotal >= 2;
+  const slides = useMemo(() => buildSlides(images), [images]);
+  const total = slides.length;
+  const canFlip = total > 1;
   const openLightbox = useLightbox();
 
-  const [phase, setPhase] = useState("cover"); // "cover" | "spread"
-  const [order, setOrder] = useState(() =>
-    Array.from({ length: nonCoverTotal }, (_, i) => i + 1)
-  );
-  const [flip, setFlip] = useState(null); // null | "next" | "prev" | "open" | "close"
+  const [index, setIndex] = useState(0);
+  const [flip, setFlip] = useState(null); // null | "next" | "prev"
   const [paused, setPaused] = useState(false);
   const flippingRef = useRef(false);
   const timeoutsRef = useRef([]);
 
-  const runFlip = useCallback((kind, onSettle) => {
+  const goNext = useCallback(() => {
+    if (flippingRef.current || !canFlip) return;
     flippingRef.current = true;
-    setFlip(kind);
+    setFlip("next");
     const t = setTimeout(() => {
-      onSettle();
+      setIndex((i) => (i + 1) % total);
       setFlip(null);
       flippingRef.current = false;
     }, FLIP_DURATION_MS);
     timeoutsRef.current.push(t);
-  }, []);
-
-  const goNext = useCallback(() => {
-    if (flippingRef.current || !hasSpread) return;
-    if (phase === "cover") {
-      runFlip("open", () => setPhase("spread"));
-    } else {
-      runFlip("next", () =>
-        setOrder((prev) => [...prev.slice(1), prev[0]])
-      );
-    }
-  }, [phase, hasSpread, runFlip]);
+  }, [canFlip, total]);
 
   const goPrev = useCallback(() => {
-    if (flippingRef.current || !hasSpread) return;
-    if (phase === "cover") return;
-    if (order[0] === 1) {
-      runFlip("close", () => setPhase("cover"));
-    } else {
-      runFlip("prev", () =>
-        setOrder((prev) => [prev[prev.length - 1], ...prev.slice(0, -1)])
-      );
-    }
-  }, [phase, order, hasSpread, runFlip]);
+    if (flippingRef.current || !canFlip) return;
+    flippingRef.current = true;
+    setFlip("prev");
+    const t = setTimeout(() => {
+      setIndex((i) => (i - 1 + total) % total);
+      setFlip(null);
+      flippingRef.current = false;
+    }, FLIP_DURATION_MS);
+    timeoutsRef.current.push(t);
+  }, [canFlip, total]);
 
   useEffect(() => {
-    if (!hasSpread || paused) return undefined;
+    if (!canFlip || paused) return undefined;
     const interval = setInterval(goNext, PAUSE_MS + FLIP_DURATION_MS);
     return () => clearInterval(interval);
-  }, [hasSpread, paused, goNext]);
+  }, [canFlip, paused, goNext]);
 
   useEffect(() => {
     const timeouts = timeoutsRef.current;
     return () => timeouts.forEach(clearTimeout);
   }, []);
 
-  const showSpread = hasSpread && (phase === "spread" || flip === "open");
-  const showCover = phase === "cover" || flip === "close";
-  const coverAnim =
-    flip === "open"
-      ? "flipbook-cover-img--turning-out"
-      : flip === "close"
-      ? "flipbook-cover-img--turning-in"
-      : "";
+  const target = flip === "next"
+    ? (index + 1) % total
+    : flip === "prev"
+    ? (index - 1 + total) % total
+    : index;
 
-  const leftIdx = hasSpread ? order[0] : null;
-  const rightIdx = hasSpread ? order[1] : null;
-  const rightUnderIdx = hasSpread ? (order.length > 2 ? order[2] : order[0]) : null;
-  const prevIncomingIdx = hasSpread ? order[order.length - 1] : null;
-  const rightFlipping = flip === "next";
-  const leftFlipping = flip === "prev";
+  // "next": the current slide flies off, revealing the next one already
+  // sitting underneath. "prev": the previous slide flies in on top of the
+  // current one. Either way there's one static layer and (during a flip)
+  // one animated layer, instead of animating both at once.
+  const staticIndex = flip === "next" ? target : index;
+  const flyingIndex = flip === "next" ? index : flip === "prev" ? target : null;
+  const staticSlide = slides[staticIndex];
+  const flyingSlide = flyingIndex !== null ? slides[flyingIndex] : null;
+  const displaySlide = slides[target];
 
-  const counterLabel =
-    showSpread && hasSpread
-      ? `${order[0] + 1}–${order[1] + 1} / ${total}`
-      : `1 / ${total}`;
+  const pageLabel = (slide) =>
+    slide.indices
+      .filter((i) => i !== null)
+      .map((i) => i + 1)
+      .join("–");
+  const counterLabel = displaySlide ? `${pageLabel(displaySlide)} / ${images.length}` : "";
 
   const handleNav = (event, action) => {
     event.preventDefault();
@@ -117,14 +125,16 @@ function Flipbook({ images, title, className, compact = false, pageAspectRatio =
     action();
   };
 
-  const renderPageImg = (idx, extraClassName = "") => {
+  const renderPageImg = (idx) => {
+    if (idx === null || idx === undefined) {
+      return <div className="flipbook-blank" />;
+    }
     const src = images[idx];
-    const classes = ["flipbook-page-img", extraClassName].filter(Boolean).join(" ");
     return (
       <img
         src={src}
         alt=""
-        className={classes}
+        className="flipbook-page-img"
         onClick={
           compact
             ? undefined
@@ -135,6 +145,37 @@ function Flipbook({ images, title, className, compact = false, pageAspectRatio =
               }
         }
       />
+    );
+  };
+
+  const renderSlideContent = (slide) => {
+    if (!slide) return null;
+    if (slide.kind === "single") {
+      const idx = slide.indices[0];
+      const src = images[idx];
+      return (
+        <img
+          src={src}
+          alt=""
+          className="flipbook-page-img flipbook-cover-img"
+          onClick={
+            compact
+              ? undefined
+              : (event) => {
+                  event.preventDefault();
+                  event.stopPropagation();
+                  openLightbox(src, title);
+                }
+          }
+        />
+      );
+    }
+    const [leftIdx, rightIdx] = slide.indices;
+    return (
+      <>
+        <div className="flipbook-leaf flipbook-leaf--left">{renderPageImg(leftIdx)}</div>
+        <div className="flipbook-leaf flipbook-leaf--right">{renderPageImg(rightIdx)}</div>
+      </>
     );
   };
 
@@ -149,47 +190,25 @@ function Flipbook({ images, title, className, compact = false, pageAspectRatio =
     >
       <div className="flipbook-stage">
         <div className="flipbook-spread">
-          {showSpread && (
-            <>
-              <div className="flipbook-leaf flipbook-leaf--left">
-                <div className="flipbook-leaf-base">{renderPageImg(leftIdx)}</div>
-                {leftFlipping && (
-                  <div className="flipbook-leaf-turn flipbook-leaf-turn--in">
-                    {renderPageImg(prevIncomingIdx)}
-                  </div>
-                )}
-              </div>
+          <div className={`flipbook-slide-shell flipbook-slide-shell--${staticSlide?.kind}`}>
+            {renderSlideContent(staticSlide)}
+          </div>
 
-              <div className="flipbook-leaf flipbook-leaf--right">
-                <div className="flipbook-leaf-base">{renderPageImg(rightUnderIdx)}</div>
-                <div
-                  className={`flipbook-leaf-turn flipbook-leaf-turn--out${
-                    rightFlipping ? " flipbook-leaf-turn--active" : ""
-                  }`}
-                >
-                  {renderPageImg(rightIdx)}
-                </div>
-              </div>
-            </>
-          )}
-
-          {showCover && (
-            <div className="flipbook-cover">
-              {renderPageImg(
-                0,
-                `flipbook-cover-img${coverAnim ? ` ${coverAnim}` : ""}`
-              )}
+          {flyingSlide && (
+            <div
+              className={`flipbook-slide-shell flipbook-slide-shell--${flyingSlide.kind} flipbook-slide-shell--flying flipbook-slide-shell--${flip}`}
+            >
+              {renderSlideContent(flyingSlide)}
             </div>
           )}
         </div>
 
-        {!compact && hasSpread && (
+        {!compact && canFlip && (
           <>
             <button
               type="button"
               className="flipbook-nav flipbook-nav--prev"
               aria-label="Previous page"
-              disabled={phase === "cover"}
               onClick={(e) => handleNav(e, goPrev)}
             >
               <ChevronIcon direction="prev" />
@@ -206,9 +225,7 @@ function Flipbook({ images, title, className, compact = false, pageAspectRatio =
         )}
       </div>
 
-      {!compact && hasSpread && (
-        <span className="flipbook-counter">{counterLabel}</span>
-      )}
+      {!compact && canFlip && <span className="flipbook-counter">{counterLabel}</span>}
     </div>
   );
 }

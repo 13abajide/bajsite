@@ -39,13 +39,70 @@
 
 .flipbook-spread {
   position: relative;
-  display: flex;
   height: 100%;
   max-width: 100%;
   /* Two pages side by side, so double a single page's own ratio — set
      per-instance from the source images' real aspect ratio so pages
      display uncropped instead of being force-fit to a guessed shape. */
   aspect-ratio: var(--flipbook-spread-ratio, 1.4);
+  /* Direct parent of the rotating .flipbook-slide-shell--flying layer —
+     perspective has to live here (not further up the tree) or some
+     browsers flatten the 3D transform and the turning page never
+     renders. */
+  perspective: 2000px;
+}
+
+/* One slide (a standalone cover, or a two-page spread) at a time sits in
+   the "static" position — either the current resting page, or whichever
+   page is being revealed mid-turn. During a turn, a second "flying" shell
+   layers on top carrying the outgoing (next) or incoming (prev) page as
+   a 3D turn animation, so only one layer ever animates instead of every
+   page fighting over shared state. */
+.flipbook-slide-shell {
+  position: absolute;
+  display: flex;
+}
+.flipbook-slide-shell--single {
+  top: 0;
+  bottom: 0;
+  left: 25%;
+  right: 25%;
+}
+.flipbook-slide-shell--pair {
+  inset: 0;
+}
+.flipbook-slide-shell--flying {
+  z-index: 5;
+  backface-visibility: hidden;
+  transform-style: preserve-3d;
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.3);
+}
+.flipbook-slide-shell--next {
+  transform-origin: left center;
+  animation: flipbook-turn-out 0.7s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+.flipbook-slide-shell--prev {
+  transform-origin: right center;
+  animation: flipbook-turn-in 0.7s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* 176deg (not a full 180) avoids the flat, z-fighting flicker some
+   browsers show right at the edge-on angle. */
+@keyframes flipbook-turn-out {
+  from {
+    transform: rotateY(0deg);
+  }
+  to {
+    transform: rotateY(-176deg);
+  }
+}
+@keyframes flipbook-turn-in {
+  from {
+    transform: rotateY(176deg);
+  }
+  to {
+    transform: rotateY(0deg);
+  }
 }
 
 .flipbook-leaf {
@@ -53,18 +110,14 @@
   flex: 1;
   height: 100%;
   overflow: hidden;
-  /* Direct parent of the rotating .flipbook-leaf-turn layer — perspective
-     has to live here (not further up the tree) or some browsers flatten
-     the 3D transform and the turning page never renders. */
-  perspective: 2000px;
 }
 .flipbook-leaf--left {
   border-radius: 3px 0 0 3px;
-  box-shadow: -6px 8px 20px rgba(0, 0, 0, 0.25);
+  box-shadow: -6px 8px 20px rgba(0, 0, 0, 0.18);
 }
 .flipbook-leaf--right {
   border-radius: 0 3px 3px 0;
-  box-shadow: 6px 8px 20px rgba(0, 0, 0, 0.25);
+  box-shadow: 6px 8px 20px rgba(0, 0, 0, 0.18);
 }
 
 /* Center gutter shading, like the spine of an open book. */
@@ -87,37 +140,7 @@
   background: linear-gradient(to left, transparent, rgba(0, 0, 0, 0.25));
 }
 
-/* Positioning shells — .flipbook-leaf-base sits flat, .flipbook-leaf-turn
-   carries the page-turn 3D transform. Each wraps a .flipbook-page-img so
-   the turn animation and a page's own static rotation (for source photos
-   that were shot/exported sideways) can be layered independently instead
-   of fighting over one element's `transform`. */
-.flipbook-leaf-base,
-.flipbook-leaf-turn {
-  position: absolute;
-  inset: 0;
-}
-
-.flipbook-leaf-turn {
-  backface-visibility: hidden;
-  transform-style: preserve-3d;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
-}
-
-.flipbook-leaf-turn--out {
-  transform-origin: left center;
-  transform: rotateY(0deg);
-}
-.flipbook-leaf-turn--out.flipbook-leaf-turn--active {
-  animation: flipbook-turn-out 0.7s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-}
-
-.flipbook-leaf-turn--in {
-  transform-origin: right center;
-  animation: flipbook-turn-in 0.7s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-}
-
-/* Shared by every rendered page (cover, leaf base, leaf turn). */
+/* Shared by every rendered page image (cover, and each leaf). */
 .flipbook-page-img {
   position: absolute;
   inset: 0;
@@ -127,61 +150,23 @@
   display: block;
   cursor: zoom-in;
 }
-
-/* The standalone cover page — sized like a single leaf (half the spread's
-   width, so it shares the same aspect ratio as the other pages) and
-   centered on the stage. Sits above the two-page spread while
-   opening/closing so the reveal underneath reads as one continuous
-   surface. */
-.flipbook-cover {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 25%;
-  right: 25%;
-  z-index: 5;
-  perspective: 2000px;
-}
 .flipbook-cover-img {
   border-radius: 3px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(0, 0, 0, 0.06);
-  backface-visibility: hidden;
-  transform-style: preserve-3d;
-  transform-origin: left center;
 }
-/* .flipbook-page-img sets object-fit:cover as a baseline; in tighter
-   layouts (the Work grid tile) the cover box can end up a slightly
-   different shape than the source photo, and cover would crop its edges
+/* .flipbook-page-img sets object-fit:cover as a baseline; a standalone
+   cover can end up a slightly different shape than the source photo in
+   tighter layouts (the Work grid tile), and cover would crop its edges
    to compensate. contain keeps the whole cover visible instead — a
    doubled selector so it reliably wins over the baseline regardless of
    CSS source order. */
 .flipbook-page-img.flipbook-cover-img {
   object-fit: contain;
 }
-.flipbook-cover-img--turning-out {
-  animation: flipbook-turn-out 0.7s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-}
-.flipbook-cover-img--turning-in {
-  animation: flipbook-turn-in 0.7s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-}
 
-/* 176deg (not a full 180) avoids the flat, z-fighting flicker some
-   browsers show right at the edge-on angle. */
-@keyframes flipbook-turn-out {
-  from {
-    transform: rotateY(0deg);
-  }
-  to {
-    transform: rotateY(-176deg);
-  }
-}
-@keyframes flipbook-turn-in {
-  from {
-    transform: rotateY(176deg);
-  }
-  to {
-    transform: rotateY(0deg);
-  }
+.flipbook-blank {
+  position: absolute;
+  inset: 0;
+  background: var(--paper-warm);
 }
 
 .flipbook-nav {
@@ -213,10 +198,6 @@
 .flipbook-nav:focus-visible {
   border-color: var(--accent);
   color: var(--accent);
-}
-.flipbook-nav:disabled {
-  opacity: 0 !important;
-  pointer-events: none;
 }
 .flipbook-nav--prev {
   left: 8px;
