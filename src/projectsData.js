@@ -26,26 +26,31 @@ function figmaEmbedUrl(figmaUrl) {
   )}`;
 }
 
+// Prefixes a public/-relative path (e.g. "work/my-project.jpg") with the
+// deployed base path. Plain "/work/..." strings work in dev but 404 once
+// built for the GitHub Pages subpath (Vite only rewrites URLs it can see
+// in index.html/JSX attributes, not string literals in this data file),
+// so every asset path below goes through this instead.
+function publicAsset(path) {
+  return `${import.meta.env.BASE_URL.replace(/\/$/, "")}/${path.replace(/^\//, "")}`;
+}
+
 // Replace each entry below with a real project. `categories` is an array
 // of one or more of "personal", "community", "school", "ui-ux", or
 // "graphic-design" — a project can fall under multiple at once, and it'll
-// show up under each in the filter above. Add a `thumbnail` (e.g.
-// "/work/my-project.jpg", dropped in public/work/) once you have an
-// image — it doubles as the large image on the project's detail page —
-// until then a placeholder tile is shown in both places. `embedUrl`
-// (built with figmaEmbedUrl, or a BASE_URL-prefixed path like
-// `${import.meta.env.BASE_URL.replace(/\/$/, "")}/work/my-demo.html` for a
-// self-hosted static page dropped in public/work/ — the prefix matters
-// since this becomes an iframe `src`, which Vite doesn't rewrite for the
-// GitHub Pages subpath the way it does index.html; strip the trailing
-// slash first since BASE_URL isn't guaranteed to end with one) takes over
-// from `thumbnail` in both spots when a live embed is more useful than a
+// show up under each in the filter above. Add a `thumbnail` (built with
+// publicAsset, e.g. `publicAsset("work/my-project.jpg")`, dropped in
+// public/work/) once you have an image — it doubles as the large image on
+// the project's detail page — until then a placeholder tile is shown in
+// both places. `embedUrl` (built with figmaEmbedUrl, or publicAsset for a
+// self-hosted static page dropped in public/work/) takes over from
+// `thumbnail` in both spots when a live embed is more useful than a
 // static image.
 //
 // `context`/`problem`/`process`/`outcome` are the four case-study blocks
-// shown on the detail page. `processImages` holds paths for the marquee
-// under the Process block (public/work/, like thumbnail); leave it empty
-// for placeholder tiles. Set `hideProcessMarquee: true` to drop the
+// shown on the detail page. `processImages` holds publicAsset paths for
+// the marquee under the Process block (public/work/, like thumbnail);
+// leave it empty for placeholder tiles. Set `hideProcessMarquee: true` to drop the
 // marquee under Process entirely instead of showing placeholder tiles.
 export const PROJECTS = [
   {
@@ -69,7 +74,7 @@ export const PROJECTS = [
     categories: ["school", "ui-ux"],
     year: "2026",
     thumbnail: null,
-    embedUrl: `${import.meta.env.BASE_URL.replace(/\/$/, "")}/work/babajides-library.html`,
+    embedUrl: publicAsset("work/babajides-library.html"),
     hideProcessMarquee: true,
     context: "In the spring of 2026, I took a class called User Interface Design taught by professor Celeste Layne. For our midterm, I built a Flask-based personal music catalog, titled “babájide's library.”",
     problem: "We had to demonstrate our design skills and build a fully-featured interface with the following requisites:\nFour distinct states (home, search, add, edit)\nClear information hierarchy through Gestalt-based grouping\nA simple, limited color palette (base, accent, light grey, dark grey)\nAccessible alt text\nScannable search feedback\nAJAX-driven forms\nInline validation\nConfirmation dialogs before destructive actions",
@@ -82,12 +87,16 @@ export const PROJECTS = [
     title: "Jumpstarting Aspiring Developers and Entrepreneurs (JADE) 2026 Sweater",
     categories: ["community", "graphic-design"],
     year: "2026",
-    thumbnail: null,
+    thumbnail: publicAsset("work/jade-sweater-thumb.jpg"),
     context: "Jumpstarting Aspiring Developers and Entrepreneurs (JADE, for short) is a week-long immersive program for 20 first-year Columbia students after their first semester to introduce them to the tech and startup ecosystem through company visits, web development lessons, and networking with founders, investors, and alumni. After I participated in the program in winter of 2025, I returned as a program leader in the winter of 2026.",
     problem: "Each cohort of JADE gets a custom sweater for their year, and I was tasked with designing what the sweater looked like this year. The sweater is meant to be a timeless keepsake for the experience.",
     process: "The design had to be a solid color and include the cohort year, ‘JADE’, & ‘Jumpstarting Aspiring Developers and Entrepreneurs.’ I sketched out an idea on my iPad, showed it to my supervisor and got the OK, and cleaned it up in Adobe Illustrator.",
     outcome: "My supervisor got the sweaters made with my design on them, and everyone liked them a lot!",
-    processImages: [],
+    processImages: [
+      publicAsset("work/jade-sweater-process-1.jpg"),
+      publicAsset("work/jade-sweater-process-2.jpg"),
+      publicAsset("work/jade-sweater-process-3.jpg"),
+    ],
   },
   {
     id: 2,
