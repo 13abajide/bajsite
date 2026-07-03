@@ -71,6 +71,14 @@
   object-fit: cover;
 }
 
+/* App-icon-style thumbnails (square logo, not a full-bleed photo) shrink
+   to leave breathing room instead of filling the tile edge to edge. */
+.work-thumb img.work-thumb-icon {
+  width: 42%;
+  height: 42%;
+  object-fit: contain;
+}
+
 .work-thumb iframe {
   width: 100%;
   height: 100%;

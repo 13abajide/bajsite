@@ -75,9 +75,9 @@ function WorkDetail() {
             className="work-detail-hero-media"
             allowFullScreen
           />
-        ) : project.thumbnail ? (
+        ) : project.heroImage || project.thumbnail ? (
           <img
-            src={project.thumbnail}
+            src={project.heroImage || project.thumbnail}
             alt=""
             className="work-detail-hero-media"
           />

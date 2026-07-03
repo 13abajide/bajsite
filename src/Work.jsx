@@ -45,7 +45,11 @@ function Work() {
           >
             <div className="work-thumb">
               {project.thumbnail ? (
-                <img src={project.thumbnail} alt="" />
+                <img
+                  src={project.thumbnail}
+                  alt=""
+                  className={project.thumbnailFit === "contain" ? "work-thumb-icon" : undefined}
+                />
               ) : project.embedUrl ? (
                 <iframe
                   src={project.embedUrl}

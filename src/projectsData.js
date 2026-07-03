@@ -44,11 +44,18 @@ function publicAsset(path) {
 // until then. `embedUrl` (built with figmaEmbedUrl, or a live URL, or
 // publicAsset for a self-hosted static page dropped in public/work/) is a
 // live iframe used on the detail-page hero whenever it's set, taking
-// priority there over `thumbnail`. The Work grid card is the other way
-// around — it shows `thumbnail` first and only falls back to the
-// `embedUrl` iframe if there's no static image — so set both when you
+// priority there over `heroImage`/`thumbnail`. The Work grid card is the
+// other way around — it shows `thumbnail` first and only falls back to
+// the `embedUrl` iframe if there's no static image — so set both when you
 // want a static thumbnail in the grid but a live embed on the detail page
 // (e.g. an app icon in the grid, a live prototype once you click in).
+// `heroImage` (also publicAsset) is an optional image that, when set,
+// replaces `thumbnail` on the detail-page hero only — the Work grid card
+// always uses `thumbnail` regardless. Use it when the grid photo and the
+// detail-page hero photo should be two different images. Set
+// `thumbnailFit: "contain"` when `thumbnail` is a logo/icon rather than a
+// full-bleed photo — it shrinks the image and centers it with breathing
+// room in the Work grid tile instead of cropping it to fill the tile.
 //
 // `context`/`problem`/`process`/`outcome` are the four case-study blocks
 // shown on the detail page. `processImages` holds publicAsset paths for
@@ -120,6 +127,7 @@ export const PROJECTS = [
     categories: ["school", "ui-ux", "graphic-design"],
     year: "2025",
     thumbnail: publicAsset("work/aspire-icon.png"),
+    thumbnailFit: "contain",
     embedUrl: "https://human-centered-design-and-innovation.vercel.app/prototype4-aspire/",
     context: "In the fall of 2025, I took a class called Human-Centered Design & innovation taught by Harry West (cool guy!). In the class, I learned the vocab of design methods and gained a new understanding of the design process for both simple and more complex products and services. We were put into groups of 4 and tasked with creating a product, so me and my group developed Aspire, an AI-powered styling application that generates personalized, budget-conscious fashion recommendations.",
     problem: "Our work in the class centered around a shared challenge, which first asked us to ponder upon people’s relationship with their clothes. My group and I found, through research, that our clothes often reflect who we used to be, instead of who we're becoming. This led us to the following problem statement:\n\n“While clothing serves as a practical necessity, it also functions as a symbolic language through which individuals express identity, mood, and belonging. However, while one's identity is constantly evolving, their wardrobe can't evolve with them — creating real dissatisfaction when people don't feel like any of their clothes align with who they currently are. How might we help individuals bridge the gap between who they are, who they aspire to be, and what they own?”",
@@ -135,12 +143,16 @@ export const PROJECTS = [
     title: "Morningside Art Exchange (MAE) Matchboxes",
     categories: ["community", "graphic-design"],
     year: "2025",
-    thumbnail: null,
+    thumbnail: publicAsset("work/mae-matchboxes-thumb.jpg"),
+    heroImage: publicAsset("work/mae-matchboxes-illustration.jpg"),
     context: "The Morningside Art Exchange (also known as MAE) is a grassroots, student-led arts collective that brings together student artists and local residents. We have our titular event, the Morningside Art Exchange, quarterly at nearby parks and operate on a barter-and-donation model. We also sell merchandise that we design ourselves.",
     problem: "We were struggling to think of merchandise we could design that people could use in day-to-day life, when an idea came to me: matchboxes. The challenge from there was translating our brand identity into a small, pretty design.",
     process: "I used Photoshop to tweak an old illustration of Morningside Park I found in a Columbia University newspaper from over 50 years ago and handwrote our organization name in the top right corner.",
     outcome: "We debuted the matchboxes at the Morningside Art Exchange we had in late 2025, and they sold out! People loved the design.",
-    processImages: [],
+    processImages: [
+      publicAsset("work/mae-matchboxes-process-1.jpg"),
+      publicAsset("work/mae-matchboxes-process-2.jpg"),
+    ],
   },
   {
     id: 7,
