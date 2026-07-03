@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, Navigate, useParams } from "react-router-dom";
 import Reveal from "./Reveal";
+import Flipbook from "./Flipbook";
 import { CATEGORIES, PROJECTS } from "./projectsData";
 import "./WorkDetail.css";
 
@@ -74,6 +75,12 @@ function WorkDetail() {
             }`}
             className="work-detail-hero-media"
             allowFullScreen
+          />
+        ) : project.flipbookImages ? (
+          <Flipbook
+            images={project.flipbookImages}
+            title={project.title}
+            className="work-detail-hero-media"
           />
         ) : project.heroImage || project.thumbnail ? (
           <img

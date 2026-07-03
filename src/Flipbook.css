@@ -1,0 +1,44 @@
+.flipbook {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  perspective: 1400px;
+}
+
+/* Used in the Work grid tile so the stack reads as a small object sitting
+   on the tile's background rather than a full-bleed image. */
+.flipbook.flipbook--inset {
+  width: 60%;
+  height: 76%;
+}
+
+.flipbook-slot {
+  position: absolute;
+  inset: 0;
+  transition: transform 0.3s ease;
+}
+
+.flipbook-page {
+  width: 100%;
+  height: 100%;
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow: 0 3px 14px rgba(0, 0, 0, 0.18);
+  transform-style: preserve-3d;
+  transform-origin: left center;
+  backface-visibility: hidden;
+}
+
+/* 176deg (not a full 180) avoids the flat, z-fighting flicker some
+   browsers show right at the edge-on angle. */
+.flipbook-page--flip {
+  transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: rotateY(-176deg);
+}
+
+.flipbook-page img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}

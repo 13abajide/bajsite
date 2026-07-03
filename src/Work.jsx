@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import Reveal from "./Reveal";
+import Flipbook from "./Flipbook";
 import { CATEGORIES, CATEGORY_LABELS, PRIMARY_CATEGORIES, PROJECTS } from "./projectsData";
 import "./Work.css";
 
@@ -44,7 +45,13 @@ function Work() {
             style={{ transitionDelay: `${(i % 6) * 60}ms` }}
           >
             <div className="work-thumb">
-              {project.thumbnail ? (
+              {project.flipbookImages ? (
+                <Flipbook
+                  images={project.flipbookImages}
+                  title={project.title}
+                  className="flipbook--inset"
+                />
+              ) : project.thumbnail ? (
                 <img
                   src={project.thumbnail}
                   alt=""
