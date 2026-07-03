@@ -1,9 +1,10 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { forwardRef, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import HTMLFlipBook from "react-pageflip";
 import { useLightbox } from "./Lightbox";
 import "./Flipbook.css";
 
-const FLIP_DURATION_MS = 700;
-const PAUSE_MS = 3300;
+const PAUSE_MS = 3500;
+const FLIP_DURATION_MS = 600;
 
 function ChevronIcon({ direction }) {
   return (
@@ -23,197 +24,158 @@ function ChevronIcon({ direction }) {
   );
 }
 
-// Builds the page sequence: the first and last images stand alone as
-// front/back covers, and everything between is paired up two at a time
-// (a trailing odd one out gets a blank partner instead of being crammed
-// in with a neighbor).
-function buildSlides(images) {
-  const total = images.length;
-  if (total === 0) return [];
-  if (total === 1) return [{ kind: "single", indices: [0] }];
+// react-pageflip needs a ref on each page for its internal DOM
+// measurements. `rotate` is for source photos that were shot/exported
+// sideways and are meant to display that way; the scale compensates for
+// the 90deg swap so a photo whose native ratio matches the page ratio
+// still fills it edge to edge.
+const FlipPage = forwardRef(function FlipPage({ src, rotate, pageAspectRatio, title, onZoom }, ref) {
+  return (
+    <div className="flipbook-page" ref={ref}>
+      {src ? (
+        <button
+          type="button"
+          className="flipbook-page-zoom"
+          onClick={() => onZoom(src)}
+          aria-label={title ? `Zoom into ${title}` : "Zoom into image"}
+        >
+          <img
+            src={src}
+            alt=""
+            className="flipbook-page-img"
+            style={
+              rotate
+                ? { transform: `rotate(${rotate}deg) scale(${1 / pageAspectRatio})` }
+                : undefined
+            }
+          />
+        </button>
+      ) : (
+        <div className="flipbook-page-blank" />
+      )}
+    </div>
+  );
+});
 
-  const middleCount = total - 2;
-  const slides = [{ kind: "single", indices: [0] }];
-  for (let i = 0; i < middleCount; i += 2) {
-    const left = 1 + i;
-    const right = i + 1 < middleCount ? left + 1 : null;
-    slides.push({ kind: "pair", indices: [left, right] });
-  }
-  slides.push({ kind: "single", indices: [total - 1] });
-  return slides;
+// The first image is a standalone front cover; every other image
+// (including the last) is a regular page, paired up two at a time (an
+// odd one out gets a blank partner). A blank page is always appended as
+// the standalone back cover, like the blank endpaper in a real book.
+function buildPages(images) {
+  const normalized = images.map((img) =>
+    typeof img === "string" ? { src: img, rotate: 0 } : { rotate: 0, ...img }
+  );
+  if (normalized.length === 0) return normalized;
+  const blank = () => ({ src: null, rotate: 0 });
+  const [front, ...middle] = normalized;
+  const paddedMiddle = middle.length % 2 === 1 ? [...middle, blank()] : middle;
+  return [front, ...paddedMiddle, blank()];
 }
 
-// A magazine reader styled after Issuu's embed. The page sequence loops
-// continuously in both directions (front cover -> paired spreads -> back
-// cover -> front cover again), each turn using a page-curl 3D animation,
-// with side nav arrows and a page counter. Drops into the same slot an
-// <img>/<iframe> thumbnail would. `compact` (the small Work grid tile)
-// hides the nav/counter chrome and just autoplays.
+// A magazine reader built on react-pageflip (StPageFlip) for a genuine
+// curling page-turn — drag a corner or click near an edge to turn, side
+// arrows and a counter for discoverability, autoplay that pauses on
+// hover and loops back to the cover at the end. `compact` (the small
+// Work grid tile) skips the interactive book entirely and just shows the
+// cover, since a draggable page-flip doesn't make sense at thumbnail
+// size.
 function Flipbook({ images, title, className, compact = false, pageAspectRatio = 0.7 }) {
-  const pages = useMemo(
-    () =>
-      images.map((img) =>
-        typeof img === "string" ? { src: img, rotate: 0 } : { rotate: 0, ...img }
-      ),
-    [images]
-  );
-  const slides = useMemo(() => buildSlides(pages), [pages]);
-  const total = slides.length;
-  const canFlip = total > 1;
+  const pages = useMemo(() => buildPages(images), [images]);
+  const total = pages.length;
   const openLightbox = useLightbox();
-
-  const [index, setIndex] = useState(0);
-  const [flip, setFlip] = useState(null); // null | "next" | "prev"
+  const bookRef = useRef(null);
   const [paused, setPaused] = useState(false);
-  const flippingRef = useRef(false);
-  const timeoutsRef = useRef([]);
+  const [pageIndex, setPageIndex] = useState(0);
+
+  const handleZoom = useCallback((src) => openLightbox(src, title), [openLightbox, title]);
 
   const goNext = useCallback(() => {
-    if (flippingRef.current || !canFlip) return;
-    flippingRef.current = true;
-    setFlip("next");
-    const t = setTimeout(() => {
-      setIndex((i) => (i + 1) % total);
-      setFlip(null);
-      flippingRef.current = false;
-    }, FLIP_DURATION_MS);
-    timeoutsRef.current.push(t);
-  }, [canFlip, total]);
-
-  const goPrev = useCallback(() => {
-    if (flippingRef.current || !canFlip) return;
-    flippingRef.current = true;
-    setFlip("prev");
-    const t = setTimeout(() => {
-      setIndex((i) => (i - 1 + total) % total);
-      setFlip(null);
-      flippingRef.current = false;
-    }, FLIP_DURATION_MS);
-    timeoutsRef.current.push(t);
-  }, [canFlip, total]);
-
-  useEffect(() => {
-    if (!canFlip || paused) return undefined;
-    const interval = setInterval(goNext, PAUSE_MS + FLIP_DURATION_MS);
-    return () => clearInterval(interval);
-  }, [canFlip, paused, goNext]);
-
-  useEffect(() => {
-    const timeouts = timeoutsRef.current;
-    return () => timeouts.forEach(clearTimeout);
+    const flip = bookRef.current?.pageFlip?.();
+    if (!flip) return;
+    if (flip.getCurrentPageIndex() >= flip.getPageCount() - 1) {
+      flip.turnToPage(0);
+    } else {
+      flip.flipNext();
+    }
   }, []);
 
-  const target = flip === "next"
-    ? (index + 1) % total
-    : flip === "prev"
-    ? (index - 1 + total) % total
-    : index;
-
-  // "next": the current slide flies off, revealing the next one already
-  // sitting underneath. "prev": the previous slide flies in on top of the
-  // current one. Either way there's one static layer and (during a flip)
-  // one animated layer, instead of animating both at once.
-  const staticIndex = flip === "next" ? target : index;
-  const flyingIndex = flip === "next" ? index : flip === "prev" ? target : null;
-  const staticSlide = slides[staticIndex];
-  const flyingSlide = flyingIndex !== null ? slides[flyingIndex] : null;
-  const displaySlide = slides[target];
-
-  const pageLabel = (slide) =>
-    slide.indices
-      .filter((i) => i !== null)
-      .map((i) => i + 1)
-      .join("–");
-  const counterLabel = displaySlide ? `${pageLabel(displaySlide)} / ${pages.length}` : "";
-
-  const handleNav = (event, action) => {
-    event.preventDefault();
-    event.stopPropagation();
-    action();
-  };
-
-  // `rotate` is for source photos that were shot/exported sideways and
-  // are meant to display that way — the scale compensates for the 90deg
-  // swap so a photo whose native ratio matches the page ratio still fills
-  // it edge to edge. This lives on the image itself, separate from the
-  // slide shell's own 3D turn transform, so the two don't fight over one
-  // element's `transform`.
-  const renderImg = (page, extraClassName = "") => (
-    <img
-      src={page.src}
-      alt=""
-      className={["flipbook-page-img", extraClassName].filter(Boolean).join(" ")}
-      style={
-        page.rotate
-          ? {
-              transform: `rotate(${page.rotate}deg) scale(${1 / pageAspectRatio})`,
-            }
-          : undefined
-      }
-      onClick={
-        compact
-          ? undefined
-          : (event) => {
-              event.preventDefault();
-              event.stopPropagation();
-              openLightbox(page.src, title);
-            }
-      }
-    />
-  );
-
-  const renderPageImg = (idx) => {
-    if (idx === null || idx === undefined) {
-      return <div className="flipbook-blank" />;
+  const goPrev = useCallback(() => {
+    const flip = bookRef.current?.pageFlip?.();
+    if (!flip) return;
+    if (flip.getCurrentPageIndex() <= 0) {
+      flip.turnToPage(flip.getPageCount() - 1);
+    } else {
+      flip.flipPrev();
     }
-    return renderImg(pages[idx]);
-  };
+  }, []);
 
-  const renderSlideContent = (slide) => {
-    if (!slide) return null;
-    if (slide.kind === "single") {
-      return renderImg(pages[slide.indices[0]], "flipbook-cover-img");
-    }
-    const [leftIdx, rightIdx] = slide.indices;
+  useEffect(() => {
+    if (compact || paused || total < 2) return undefined;
+    const id = setInterval(goNext, PAUSE_MS);
+    return () => clearInterval(id);
+  }, [compact, paused, total, goNext]);
+
+  if (compact) {
+    const cover = pages[0];
     return (
-      <>
-        <div className="flipbook-leaf flipbook-leaf--left">{renderPageImg(leftIdx)}</div>
-        <div className="flipbook-leaf flipbook-leaf--right">{renderPageImg(rightIdx)}</div>
-      </>
+      <div className={`flipbook flipbook--static${className ? ` ${className}` : ""}`}>
+        {cover?.src && <img src={cover.src} alt="" className="flipbook-static-cover" />}
+      </div>
     );
-  };
+  }
 
   return (
     <div
       className={`flipbook${className ? ` ${className}` : ""}`}
-      style={{ "--flipbook-spread-ratio": pageAspectRatio * 2 }}
       role="group"
       aria-label={title ? `${title} — magazine flipbook` : undefined}
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
     >
       <div className="flipbook-stage">
-        <div className="flipbook-spread">
-          <div className={`flipbook-slide-shell flipbook-slide-shell--${staticSlide?.kind}`}>
-            {renderSlideContent(staticSlide)}
-          </div>
+        <HTMLFlipBook
+          ref={bookRef}
+          width={360}
+          height={Math.round(360 / pageAspectRatio)}
+          size="stretch"
+          minWidth={160}
+          maxWidth={800}
+          minHeight={200}
+          maxHeight={1000}
+          showCover
+          drawShadow
+          maxShadowOpacity={0.35}
+          flippingTime={FLIP_DURATION_MS}
+          usePortrait={false}
+          mobileScrollSupport={false}
+          className={`flipbook-book${
+            pageIndex === 0
+              ? " flipbook-book-shift--front"
+              : pageIndex === total - 1
+              ? " flipbook-book-shift--back"
+              : ""
+          }`}
+          onFlip={(e) => setPageIndex(e.data)}
+        >
+          {pages.map((page, i) => (
+            <FlipPage
+              key={i}
+              src={page.src}
+              rotate={page.rotate}
+              pageAspectRatio={pageAspectRatio}
+              title={title}
+              onZoom={handleZoom}
+            />
+          ))}
+        </HTMLFlipBook>
 
-          {flyingSlide && (
-            <div
-              className={`flipbook-slide-shell flipbook-slide-shell--${flyingSlide.kind} flipbook-slide-shell--flying flipbook-slide-shell--${flip}`}
-            >
-              {renderSlideContent(flyingSlide)}
-            </div>
-          )}
-        </div>
-
-        {!compact && canFlip && (
+        {total > 1 && (
           <>
             <button
               type="button"
               className="flipbook-nav flipbook-nav--prev"
               aria-label="Previous page"
-              onClick={(e) => handleNav(e, goPrev)}
+              onClick={goPrev}
             >
               <ChevronIcon direction="prev" />
             </button>
@@ -221,7 +183,7 @@ function Flipbook({ images, title, className, compact = false, pageAspectRatio =
               type="button"
               className="flipbook-nav flipbook-nav--next"
               aria-label="Next page"
-              onClick={(e) => handleNav(e, goNext)}
+              onClick={goNext}
             >
               <ChevronIcon direction="next" />
             </button>
@@ -229,7 +191,11 @@ function Flipbook({ images, title, className, compact = false, pageAspectRatio =
         )}
       </div>
 
-      {!compact && canFlip && <span className="flipbook-counter">{counterLabel}</span>}
+      {total > 1 && (
+        <span className="flipbook-counter">
+          {pageIndex + 1} / {total}
+        </span>
+      )}
     </div>
   );
 }
