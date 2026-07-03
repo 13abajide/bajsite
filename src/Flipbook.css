@@ -32,23 +32,16 @@
   flex: 1;
   width: 100%;
   min-height: 0;
-  /* Grid's aspect-ratio sizing for a centered child with only
-     max-width/max-height set is more reliable across browsers than the
-     flex equivalent for this "fit within both axes" case. */
-  display: grid;
-  place-items: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .flipbook-spread {
   position: relative;
   display: flex;
-  /* No explicit width/height — letterbox-fit within the stage from
-     whichever axis is actually tight, via max-width/max-height plus
-     aspect-ratio, rather than fixing height and deriving+clamping width
-     (which left pages a slightly different shape than the source photos
-     in tighter layouts, and object-fit:cover cropped them to match). */
+  height: 100%;
   max-width: 100%;
-  max-height: 100%;
   /* Two pages side by side, so double a single page's own ratio — set
      per-instance from the source images' real aspect ratio so pages
      display uncropped instead of being force-fit to a guessed shape. */
@@ -155,6 +148,15 @@
   backface-visibility: hidden;
   transform-style: preserve-3d;
   transform-origin: left center;
+}
+/* .flipbook-page-img sets object-fit:cover as a baseline; in tighter
+   layouts (the Work grid tile) the cover box can end up a slightly
+   different shape than the source photo, and cover would crop its edges
+   to compensate. contain keeps the whole cover visible instead — a
+   doubled selector so it reliably wins over the baseline regardless of
+   CSS source order. */
+.flipbook-page-img.flipbook-cover-img {
+  object-fit: contain;
 }
 .flipbook-cover-img--turning-out {
   animation: flipbook-turn-out 0.7s cubic-bezier(0.4, 0, 0.2, 1) forwards;
