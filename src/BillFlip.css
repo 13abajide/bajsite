@@ -7,6 +7,13 @@
   gap: 18px;
   background: var(--paper-warm);
 }
+/* On the WorkDetail hero, .bill-flip lands on the same element as
+   .work-detail-hero-media (equal specificity, cascade-order dependent) —
+   the doubled selector guarantees this flex layout wins regardless of
+   CSS chunk order. */
+.bill-flip.bill-flip {
+  display: flex;
+}
 
 .bill-flip-stage {
   flex: 1;

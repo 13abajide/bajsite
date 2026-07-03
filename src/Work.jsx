@@ -62,6 +62,8 @@ function Work() {
                   images={project.flipbookImages}
                   title={project.title}
                   className="flipbook--inset"
+                  pageAspectRatio={project.flipbookAspectRatio}
+                  compact
                 />
               ) : project.thumbnail ? (
                 <img

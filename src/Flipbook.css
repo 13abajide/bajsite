@@ -2,43 +2,224 @@
   position: relative;
   width: 100%;
   height: 100%;
-  perspective: 1400px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 6% 6% 4%;
+  box-sizing: border-box;
+}
+/* On the WorkDetail hero, .flipbook lands on the same element as
+   .work-detail-hero-media (equal specificity, cascade-order dependent) —
+   the doubled selector guarantees this flex layout wins regardless of
+   CSS chunk order. */
+.flipbook.flipbook {
+  display: flex;
 }
 
-/* Used in the Work grid tile so the stack reads as a small object sitting
-   on the tile's background rather than a full-bleed image. */
+/* Used in the Work grid tile so the reader sits inset within the tile
+   rather than filling it, and skips the nav/counter chrome entirely. */
 .flipbook.flipbook--inset {
-  width: 60%;
-  height: 76%;
+  width: 74%;
+  height: 84%;
+  gap: 0;
+  padding: 8%;
 }
 
-.flipbook-slot {
+.flipbook-stage {
+  position: relative;
+  flex: 1;
+  width: 100%;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.flipbook-spread {
+  position: relative;
+  display: flex;
+  height: 100%;
+  max-width: 100%;
+  /* Two pages side by side, so double a single page's own ratio — set
+     per-instance from the source images' real aspect ratio so pages
+     display uncropped instead of being force-fit to a guessed shape. */
+  aspect-ratio: var(--flipbook-spread-ratio, 1.4);
+}
+
+.flipbook-leaf {
+  position: relative;
+  flex: 1;
+  height: 100%;
+  overflow: hidden;
+  /* Direct parent of the rotating .flipbook-leaf-turn layer — perspective
+     has to live here (not further up the tree) or some browsers flatten
+     the 3D transform and the turning page never renders. */
+  perspective: 2000px;
+}
+.flipbook-leaf--left {
+  border-radius: 3px 0 0 3px;
+  box-shadow: -6px 8px 20px rgba(0, 0, 0, 0.25);
+}
+.flipbook-leaf--right {
+  border-radius: 0 3px 3px 0;
+  box-shadow: 6px 8px 20px rgba(0, 0, 0, 0.25);
+}
+
+/* Center gutter shading, like the spine of an open book. */
+.flipbook-leaf--left::before,
+.flipbook-leaf--right::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 14%;
+  pointer-events: none;
+  z-index: 2;
+}
+.flipbook-leaf--left::before {
+  right: 0;
+  background: linear-gradient(to right, transparent, rgba(0, 0, 0, 0.25));
+}
+.flipbook-leaf--right::before {
+  left: 0;
+  background: linear-gradient(to left, transparent, rgba(0, 0, 0, 0.25));
+}
+
+/* Positioning shells — .flipbook-leaf-base sits flat, .flipbook-leaf-turn
+   carries the page-turn 3D transform. Each wraps a .flipbook-page-img so
+   the turn animation and a page's own static rotation (for source photos
+   that were shot/exported sideways) can be layered independently instead
+   of fighting over one element's `transform`. */
+.flipbook-leaf-base,
+.flipbook-leaf-turn {
   position: absolute;
   inset: 0;
-  transition: transform 0.3s ease;
 }
 
-.flipbook-page {
-  width: 100%;
-  height: 100%;
-  border-radius: 6px;
-  overflow: hidden;
-  box-shadow: 0 3px 14px rgba(0, 0, 0, 0.18);
-  transform-style: preserve-3d;
-  transform-origin: left center;
+.flipbook-leaf-turn {
   backface-visibility: hidden;
+  transform-style: preserve-3d;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
 }
 
-/* 176deg (not a full 180) avoids the flat, z-fighting flicker some
-   browsers show right at the edge-on angle. */
-.flipbook-page--flip {
-  transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
-  transform: rotateY(-176deg);
+.flipbook-leaf-turn--out {
+  transform-origin: left center;
+  transform: rotateY(0deg);
+}
+.flipbook-leaf-turn--out.flipbook-leaf-turn--active {
+  animation: flipbook-turn-out 0.7s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
-.flipbook-page img {
+.flipbook-leaf-turn--in {
+  transform-origin: right center;
+  animation: flipbook-turn-in 0.7s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* Shared by every rendered page (cover, leaf base, leaf turn). */
+.flipbook-page-img {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
+  cursor: zoom-in;
+}
+
+/* The standalone cover page — sized like a single leaf (half the spread's
+   width, so it shares the same aspect ratio as the other pages) and
+   centered on the stage. Sits above the two-page spread while
+   opening/closing so the reveal underneath reads as one continuous
+   surface. */
+.flipbook-cover {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 25%;
+  right: 25%;
+  z-index: 5;
+  perspective: 2000px;
+}
+.flipbook-cover-img {
+  border-radius: 3px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(0, 0, 0, 0.06);
+  backface-visibility: hidden;
+  transform-style: preserve-3d;
+  transform-origin: left center;
+}
+.flipbook-cover-img--turning-out {
+  animation: flipbook-turn-out 0.7s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+.flipbook-cover-img--turning-in {
+  animation: flipbook-turn-in 0.7s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* 176deg (not a full 180) avoids the flat, z-fighting flicker some
+   browsers show right at the edge-on angle. */
+@keyframes flipbook-turn-out {
+  from {
+    transform: rotateY(0deg);
+  }
+  to {
+    transform: rotateY(-176deg);
+  }
+}
+@keyframes flipbook-turn-in {
+  from {
+    transform: rotateY(176deg);
+  }
+  to {
+    transform: rotateY(0deg);
+  }
+}
+
+.flipbook-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  background: var(--paper);
+  color: var(--ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 6;
+  opacity: 0;
+  transition: opacity 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+.flipbook-nav svg {
+  width: 16px;
+  height: 16px;
+}
+.flipbook:hover .flipbook-nav,
+.flipbook-nav:focus-visible {
+  opacity: 1;
+}
+.flipbook-nav:hover,
+.flipbook-nav:focus-visible {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.flipbook-nav:disabled {
+  opacity: 0 !important;
+  pointer-events: none;
+}
+.flipbook-nav--prev {
+  left: 8px;
+}
+.flipbook-nav--next {
+  right: 8px;
+}
+
+.flipbook-counter {
+  flex-shrink: 0;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: var(--ink-faint);
 }

@@ -106,6 +106,7 @@ function WorkDetail() {
             images={project.flipbookImages}
             title={project.title}
             className="work-detail-hero-media"
+            pageAspectRatio={project.flipbookAspectRatio}
           />
         ) : project.billFlip ? (
           <BillFlip

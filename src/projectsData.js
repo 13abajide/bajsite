@@ -229,6 +229,7 @@ export const PROJECTS = [
       publicAsset("work/decision-day-flip-6.jpg"),
       publicAsset("work/decision-day-flip-7.jpg"),
     ],
+    flipbookAspectRatio: 4 / 5,
     context: "In December of 2023, I was accepted to Columbia University on a full ride scholarship through the Questbridge National College Match.",
     problem: "I wanted to do a photoshoot to celebrate my academic achievement.",
     process: "I created a moodboard, booked a studio and asked my friend to take my pictures, and edited them on Photoshhop.",

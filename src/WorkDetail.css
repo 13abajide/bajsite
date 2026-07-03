@@ -40,7 +40,6 @@
    so object-fit lives on the class itself — it's a no-op on non-replaced
    elements like the placeholder div and the link. */
 .work-detail-hero-media {
-  display: block;
   width: 100%;
   aspect-ratio: 16 / 9;
   border-radius: 16px;
