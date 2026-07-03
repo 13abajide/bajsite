@@ -93,9 +93,9 @@ export const PROJECTS = [
     process: "The design had to be a solid color and include the cohort year, ‘JADE’, & ‘Jumpstarting Aspiring Developers and Entrepreneurs.’ I sketched out an idea on my iPad, showed it to my supervisor and got the OK, and cleaned it up in Adobe Illustrator.",
     outcome: "My supervisor got the sweaters made with my design on them, and everyone liked them a lot!",
     processImages: [
+      publicAsset("work/jade-sweater-process-3.jpg"),
       publicAsset("work/jade-sweater-process-1.jpg"),
       publicAsset("work/jade-sweater-process-2.jpg"),
-      publicAsset("work/jade-sweater-process-3.jpg"),
     ],
   },
   {
