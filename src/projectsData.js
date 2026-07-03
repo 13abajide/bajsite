@@ -191,12 +191,16 @@ export const PROJECTS = [
     title: "The Crown Recruitment Poster",
     categories: ["community", "graphic-design"],
     year: "2025",
-    thumbnail: null,
+    thumbnail: publicAsset("work/crown-poster-thumb.jpg"),
     context: "The Crown Magazine is a Columbia University organization meant to highlight the soul and drive of the Black Columbia community.",
     problem: "My friend who runs the organization requested I make a flyer for recruitment that had a newspaper clippings collage kinda vibe.",
     process: "I used Photoshop and images from Black magazines to create a visually striking collage.",
     outcome: "When I sent the flyer back, my friend replied with \"God will bless your family tenfold. this is exquisite,\" which I took as confirmation that he liked it. It was subsequently posted on the organization's Instagram and printed out to display across campus.",
-    processImages: [],
+    processImages: [
+      publicAsset("work/crown-poster-process-1.jpg"),
+      publicAsset("work/crown-poster-process-2.jpg"),
+      publicAsset("work/crown-poster-process-3.jpg"),
+    ],
   },
   {
     id: 11,
