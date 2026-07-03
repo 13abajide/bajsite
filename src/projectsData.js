@@ -225,8 +225,10 @@ export const PROJECTS = [
       publicAsset("work/decision-day-flip-2.jpg"),
       publicAsset("work/decision-day-flip-3.jpg"),
       publicAsset("work/decision-day-flip-4.jpg"),
-      publicAsset("work/decision-day-flip-5.jpg"),
-      publicAsset("work/decision-day-flip-6.jpg"),
+      // Displayed sideways on purpose, matching how they ran in the
+      // original Instagram carousel.
+      { src: publicAsset("work/decision-day-flip-5.jpg"), rotate: -90 },
+      { src: publicAsset("work/decision-day-flip-6.jpg"), rotate: -90 },
       publicAsset("work/decision-day-flip-7.jpg"),
     ],
     flipbookAspectRatio: 4 / 5,

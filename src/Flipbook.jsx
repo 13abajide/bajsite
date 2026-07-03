@@ -50,7 +50,14 @@ function buildSlides(images) {
 // <img>/<iframe> thumbnail would. `compact` (the small Work grid tile)
 // hides the nav/counter chrome and just autoplays.
 function Flipbook({ images, title, className, compact = false, pageAspectRatio = 0.7 }) {
-  const slides = useMemo(() => buildSlides(images), [images]);
+  const pages = useMemo(
+    () =>
+      images.map((img) =>
+        typeof img === "string" ? { src: img, rotate: 0 } : { rotate: 0, ...img }
+      ),
+    [images]
+  );
+  const slides = useMemo(() => buildSlides(pages), [pages]);
   const total = slides.length;
   const canFlip = total > 1;
   const openLightbox = useLightbox();
@@ -117,7 +124,7 @@ function Flipbook({ images, title, className, compact = false, pageAspectRatio =
       .filter((i) => i !== null)
       .map((i) => i + 1)
       .join("–");
-  const counterLabel = displaySlide ? `${pageLabel(displaySlide)} / ${images.length}` : "";
+  const counterLabel = displaySlide ? `${pageLabel(displaySlide)} / ${pages.length}` : "";
 
   const handleNav = (event, action) => {
     event.preventDefault();
@@ -125,50 +132,47 @@ function Flipbook({ images, title, className, compact = false, pageAspectRatio =
     action();
   };
 
+  // `rotate` is for source photos that were shot/exported sideways and
+  // are meant to display that way — the scale compensates for the 90deg
+  // swap so a photo whose native ratio matches the page ratio still fills
+  // it edge to edge. This lives on the image itself, separate from the
+  // slide shell's own 3D turn transform, so the two don't fight over one
+  // element's `transform`.
+  const renderImg = (page, extraClassName = "") => (
+    <img
+      src={page.src}
+      alt=""
+      className={["flipbook-page-img", extraClassName].filter(Boolean).join(" ")}
+      style={
+        page.rotate
+          ? {
+              transform: `rotate(${page.rotate}deg) scale(${1 / pageAspectRatio})`,
+            }
+          : undefined
+      }
+      onClick={
+        compact
+          ? undefined
+          : (event) => {
+              event.preventDefault();
+              event.stopPropagation();
+              openLightbox(page.src, title);
+            }
+      }
+    />
+  );
+
   const renderPageImg = (idx) => {
     if (idx === null || idx === undefined) {
       return <div className="flipbook-blank" />;
     }
-    const src = images[idx];
-    return (
-      <img
-        src={src}
-        alt=""
-        className="flipbook-page-img"
-        onClick={
-          compact
-            ? undefined
-            : (event) => {
-                event.preventDefault();
-                event.stopPropagation();
-                openLightbox(src, title);
-              }
-        }
-      />
-    );
+    return renderImg(pages[idx]);
   };
 
   const renderSlideContent = (slide) => {
     if (!slide) return null;
     if (slide.kind === "single") {
-      const idx = slide.indices[0];
-      const src = images[idx];
-      return (
-        <img
-          src={src}
-          alt=""
-          className="flipbook-page-img flipbook-cover-img"
-          onClick={
-            compact
-              ? undefined
-              : (event) => {
-                  event.preventDefault();
-                  event.stopPropagation();
-                  openLightbox(src, title);
-                }
-          }
-        />
-      );
+      return renderImg(pages[slide.indices[0]], "flipbook-cover-img");
     }
     const [leftIdx, rightIdx] = slide.indices;
     return (
