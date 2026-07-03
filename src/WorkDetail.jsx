@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, Navigate, useParams } from "react-router-dom";
 import Reveal from "./Reveal";
 import Flipbook from "./Flipbook";
+import BillFlip from "./BillFlip";
 import { CATEGORIES, PROJECTS } from "./projectsData";
 import "./WorkDetail.css";
 
@@ -79,6 +80,12 @@ function WorkDetail() {
         ) : project.flipbookImages ? (
           <Flipbook
             images={project.flipbookImages}
+            title={project.title}
+            className="work-detail-hero-media"
+          />
+        ) : project.billFlip ? (
+          <BillFlip
+            bills={project.billFlip.bills}
             title={project.title}
             className="work-detail-hero-media"
           />

@@ -57,6 +57,15 @@ function publicAsset(path) {
 // full-bleed photo — it shrinks the image and centers it with breathing
 // room in the Work grid tile instead of cropping it to fill the tile.
 //
+// `flipbookImages` (array of publicAsset paths) shows a stack of photos
+// that auto-cycles with a 3D page-flip on the detail-page hero (and, inset,
+// in the Work grid tile), taking priority over `heroImage`/`thumbnail` but
+// not `embedUrl`. `billFlip: { bills: [{ label, front, back }, ...] }`
+// shows a click-to-flip 3D bill viewer on the detail-page hero instead —
+// each bill has a front/back image and, with more than one bill, arrows
+// switch between them. Same priority slot as `flipbookImages`; the Work
+// grid still just uses `thumbnail`.
+//
 // `context`/`problem`/`process`/`outcome` are the four case-study blocks
 // shown on the detail page. `processImages` holds publicAsset paths for
 // the marquee under the Process block (public/work/, like thumbnail);
@@ -233,11 +242,31 @@ export const PROJECTS = [
     title: "Baji Buck",
     categories: ["school", "graphic-design"],
     year: "2023",
-    thumbnail: null,
+    thumbnail: publicAsset("work/baji-buck-thumb.jpg"),
+    thumbnailFit: "contain",
+    billFlip: {
+      bills: [
+        {
+          label: "$1",
+          front: publicAsset("work/baji-buck-1-front.jpg"),
+          back: publicAsset("work/baji-buck-1-back.jpg"),
+        },
+        {
+          label: "$100",
+          front: publicAsset("work/baji-buck-100-front.jpg"),
+          back: publicAsset("work/baji-buck-100-back.jpg"),
+        },
+      ],
+    },
     context: "In 2022, I ran for treasurer of my high school's student council and created the 'Baji Buck' as a means of merchandise marketing. After winning, I ran for president the following year.",
     problem: "I wanted to improve upon my original design with my increased knowledge in Photoshop.",
     process: "I used Photoshop to redesign the one dollar bill and hundred dollar bill to have my face and high school on it.",
     outcome: "I won the presidency!",
-    processImages: [],
+    processImages: [
+      publicAsset("work/baji-buck-process-1.jpg"),
+      publicAsset("work/baji-buck-process-2.jpg"),
+      publicAsset("work/baji-buck-process-3.jpg"),
+      publicAsset("work/baji-buck-process-4.jpg"),
+    ],
   },
 ];
