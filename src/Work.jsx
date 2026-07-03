@@ -47,7 +47,9 @@ function Work() {
               {project.embedUrl ? (
                 <iframe
                   src={project.embedUrl}
-                  title={`${project.title} — Figma`}
+                  title={`${project.title} — ${
+                    project.embedUrl.includes("figma.com") ? "Figma" : "Live demo"
+                  }`}
                   allowFullScreen
                   tabIndex={-1}
                 />

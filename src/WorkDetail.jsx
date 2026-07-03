@@ -69,7 +69,9 @@ function WorkDetail() {
         {project.embedUrl ? (
           <iframe
             src={project.embedUrl}
-            title={`${project.title} — Figma`}
+            title={`${project.title} — ${
+              project.embedUrl.includes("figma.com") ? "Figma" : "Live demo"
+            }`}
             className="work-detail-hero-media"
             allowFullScreen
           />
@@ -133,7 +135,7 @@ function WorkDetail() {
                 {project[activeStep.key] || "Nothing written for this section yet."}
               </p>
 
-              {activeStep.key === "process" && (
+              {activeStep.key === "process" && !project.hideProcessMarquee && (
                 <div className="story-marquee">
                   <div className="story-marquee-track">
                     {[...marqueeImages, ...marqueeImages].map((src, i) => (
