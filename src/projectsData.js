@@ -40,12 +40,15 @@ function publicAsset(path) {
 // "graphic-design" — a project can fall under multiple at once, and it'll
 // show up under each in the filter above. Add a `thumbnail` (built with
 // publicAsset, e.g. `publicAsset("work/my-project.jpg")`, dropped in
-// public/work/) once you have an image — it doubles as the large image on
-// the project's detail page — until then a placeholder tile is shown in
-// both places. `embedUrl` (built with figmaEmbedUrl, or publicAsset for a
-// self-hosted static page dropped in public/work/) takes over from
-// `thumbnail` in both spots when a live embed is more useful than a
-// static image.
+// public/work/) once you have an image — a placeholder tile is shown
+// until then. `embedUrl` (built with figmaEmbedUrl, or a live URL, or
+// publicAsset for a self-hosted static page dropped in public/work/) is a
+// live iframe used on the detail-page hero whenever it's set, taking
+// priority there over `thumbnail`. The Work grid card is the other way
+// around — it shows `thumbnail` first and only falls back to the
+// `embedUrl` iframe if there's no static image — so set both when you
+// want a static thumbnail in the grid but a live embed on the detail page
+// (e.g. an app icon in the grid, a live prototype once you click in).
 //
 // `context`/`problem`/`process`/`outcome` are the four case-study blocks
 // shown on the detail page. `processImages` holds publicAsset paths for
@@ -116,12 +119,16 @@ export const PROJECTS = [
     title: "Human-Centered Design & Innovation Project (Aspire)",
     categories: ["school", "ui-ux", "graphic-design"],
     year: "2025",
-    thumbnail: null,
+    thumbnail: publicAsset("work/aspire-icon.png"),
+    embedUrl: "https://human-centered-design-and-innovation.vercel.app/prototype4-aspire/",
     context: "In the fall of 2025, I took a class called Human-Centered Design & innovation taught by Harry West (cool guy!). In the class, I learned the vocab of design methods and gained a new understanding of the design process for both simple and more complex products and services. We were put into groups of 4 and tasked with creating a product, so me and my group developed Aspire, an AI-powered styling application that generates personalized, budget-conscious fashion recommendations.",
     problem: "Our work in the class centered around a shared challenge, which first asked us to ponder upon people’s relationship with their clothes. My group and I found, through research, that our clothes often reflect who we used to be, instead of who we're becoming. This led us to the following problem statement:\n\n“While clothing serves as a practical necessity, it also functions as a symbolic language through which individuals express identity, mood, and belonging. However, while one's identity is constantly evolving, their wardrobe can't evolve with them — creating real dissatisfaction when people don't feel like any of their clothes align with who they currently are. How might we help individuals bridge the gap between who they are, who they aspire to be, and what they own?”",
     process: "Each member of the team did their own research before we came together and reflected upon our findings. We then conducted interviews to see if closet dissatisfaction was something experienced by others than ourselves. I came up with our problem statement after compiling all of our qualitative data and pulling out the recurring themes. I then designed our app icon, which set the visual and tonal direction for the prototype of our product which we worked together to build using a mix of code and artificial intelligence upon our professor’s instruction. After we had a working prototype, I improved upon the UI components after getting feedback from friends while my other team members refined the underlying AI logic.",
     outcome: "We got a favorable final evaluation and compliments from classmates on our name, logo, and ad, all of which I contributed significantly to.",
-    processImages: [],
+    processImages: [
+      publicAsset("work/aspire-icon.png"),
+      publicAsset("work/aspire-team.jpg"),
+    ],
   },
   {
     id: 6,

@@ -44,7 +44,9 @@ function Work() {
             style={{ transitionDelay: `${(i % 6) * 60}ms` }}
           >
             <div className="work-thumb">
-              {project.embedUrl ? (
+              {project.thumbnail ? (
+                <img src={project.thumbnail} alt="" />
+              ) : project.embedUrl ? (
                 <iframe
                   src={project.embedUrl}
                   title={`${project.title} — ${
@@ -53,8 +55,6 @@ function Work() {
                   allowFullScreen
                   tabIndex={-1}
                 />
-              ) : project.thumbnail ? (
-                <img src={project.thumbnail} alt="" />
               ) : (
                 <span className="work-thumb-placeholder">
                   {String(i + 1).padStart(2, "0")}
