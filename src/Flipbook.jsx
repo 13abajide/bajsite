@@ -81,13 +81,56 @@ function buildPages(images) {
 // Work grid tile) skips the interactive book entirely and just shows the
 // cover, since a draggable page-flip doesn't make sense at thumbnail
 // size.
-function Flipbook({ images, title, className, compact = false, pageAspectRatio = 0.7 }) {
+function Flipbook({
+  images,
+  title,
+  className,
+  compact = false,
+  pageAspectRatio = 0.7,
+  thumbnailFit,
+}) {
   const pages = useMemo(() => buildPages(images), [images]);
   const total = pages.length;
   const openLightbox = useLightbox();
   const bookRef = useRef(null);
+  const stageRef = useRef(null);
   const [paused, setPaused] = useState(false);
   const [pageIndex, setPageIndex] = useState(0);
+  const [coverShift, setCoverShift] = useState(0);
+
+  // showCover renders a standalone front/back cover as one half of a
+  // full spread-width canvas rather than centering it, and by how much
+  // varies with the book's actual rendered size (not a fixed fraction) —
+  // so measure the real gap and nudge it over instead of guessing a
+  // percentage that only happens to work at one viewport width.
+  useEffect(() => {
+    const isSingle = pageIndex === 0 || pageIndex === total - 1;
+    if (!isSingle) {
+      setCoverShift(0);
+      return undefined;
+    }
+    const measure = () => {
+      const stageEl = stageRef.current;
+      if (!stageEl) return;
+      // page-flip keeps every page in the DOM and toggles display, so
+      // grab the one actually showing rather than assuming DOM order.
+      const item = [...stageEl.querySelectorAll(".stf__item")].find(
+        (el) => el.getBoundingClientRect().width > 0
+      );
+      if (!item) return;
+      const stageRect = stageEl.getBoundingClientRect();
+      const itemRect = item.getBoundingClientRect();
+      const desiredCenter = stageRect.left + stageRect.width / 2;
+      const currentCenter = itemRect.left + itemRect.width / 2;
+      setCoverShift(desiredCenter - currentCenter);
+    };
+    const raf = requestAnimationFrame(measure);
+    window.addEventListener("resize", measure);
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("resize", measure);
+    };
+  }, [pageIndex, total]);
 
   const handleZoom = useCallback((src) => openLightbox(src, title), [openLightbox, title]);
 
@@ -121,7 +164,15 @@ function Flipbook({ images, title, className, compact = false, pageAspectRatio =
     const cover = pages[0];
     return (
       <div className={`flipbook flipbook--static${className ? ` ${className}` : ""}`}>
-        {cover?.src && <img src={cover.src} alt="" className="flipbook-static-cover" />}
+        {cover?.src && (
+          <img
+            src={cover.src}
+            alt=""
+            className={`flipbook-static-cover${
+              thumbnailFit === "contain" ? " work-thumb-icon" : ""
+            }`}
+          />
+        )}
       </div>
     );
   }
@@ -134,7 +185,7 @@ function Flipbook({ images, title, className, compact = false, pageAspectRatio =
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
     >
-      <div className="flipbook-stage">
+      <div className="flipbook-stage" ref={stageRef}>
         <HTMLFlipBook
           ref={bookRef}
           width={360}
@@ -148,15 +199,9 @@ function Flipbook({ images, title, className, compact = false, pageAspectRatio =
           drawShadow
           maxShadowOpacity={0.35}
           flippingTime={FLIP_DURATION_MS}
-          usePortrait={false}
           mobileScrollSupport={false}
-          className={`flipbook-book${
-            pageIndex === 0
-              ? " flipbook-book-shift--front"
-              : pageIndex === total - 1
-              ? " flipbook-book-shift--back"
-              : ""
-          }`}
+          className="flipbook-book"
+          style={coverShift ? { transform: `translateX(${coverShift}px)` } : undefined}
           onFlip={(e) => setPageIndex(e.data)}
         >
           {pages.map((page, i) => (

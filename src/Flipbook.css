@@ -52,18 +52,10 @@
 }
 
 /* showCover mode positions a standalone cover as one half of a full
-   spread-width canvas (the front cover sits on the right half, the back
-   cover on the left) rather than centering the single visible page — nudge
-   the whole book sideways so the one visible page reads as centered.
-   page-flip injects its own .stf__parent rule (with its own transform)
-   into the document after this stylesheet loads, so equal specificity
-   isn't enough to win on source order — the doubled selector forces it. */
-.flipbook-book-shift--front.flipbook-book-shift--front {
-  transform: translateX(-25%);
-}
-.flipbook-book-shift--back.flipbook-book-shift--back {
-  transform: translateX(25%);
-}
+   spread-width canvas rather than centering the single visible page —
+   Flipbook.jsx measures the real gap and nudges the book sideways via an
+   inline style (which always wins over page-flip's own injected
+   .stf__parent transform, no specificity games needed). */
 
 .flipbook-page {
   background: var(--paper);

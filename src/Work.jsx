@@ -63,6 +63,7 @@ function Work() {
                   title={project.title}
                   className="flipbook--inset"
                   pageAspectRatio={project.flipbookAspectRatio}
+                  thumbnailFit={project.thumbnailFit}
                   compact
                 />
               ) : project.thumbnail ? (
