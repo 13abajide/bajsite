@@ -237,12 +237,6 @@ function Flipbook({
           </>
         )}
       </div>
-
-      {total > 1 && (
-        <span className="flipbook-counter">
-          {pageIndex + 1} / {total}
-        </span>
-      )}
     </div>
   );
 }

@@ -114,16 +114,8 @@
   color: var(--accent);
 }
 .flipbook-nav--prev {
-  left: -4px;
+  left: 8px;
 }
 .flipbook-nav--next {
-  right: -4px;
-}
-
-.flipbook-counter {
-  flex-shrink: 0;
-  font-family: var(--font-mono);
-  font-size: 11px;
-  letter-spacing: 0.08em;
-  color: var(--ink-faint);
+  right: 8px;
 }
