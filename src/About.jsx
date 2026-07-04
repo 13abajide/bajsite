@@ -18,7 +18,9 @@ function About() {
             Art Exchange, a Harlem-based arts collective that regularly puts
             on community-oriented events drawing hundreds of attendees. He is
             also a QuestBridge National College Match and Gates Scholarship
-            recipient, but doesn&rsquo;t like to toot his own horn very much. 
+            recipient, but doesn&rsquo;t like to toot his own horn very much.
+            He does, however, love to brag about being from Newark, New
+            Jersey.
           </p>
           <p className="about-body">
             Babajide is always open to new collaborations, design
