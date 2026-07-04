@@ -18,13 +18,7 @@ function About() {
             Art Exchange, a Harlem-based arts collective that regularly puts
             on community-oriented events drawing hundreds of attendees. He is
             also a QuestBridge National College Match and Gates Scholarship
-            recipient, but doesn&rsquo;t like to toot his own horn very much.
-          </p>
-          <p className="about-body">
-            Nigerian by blood but raised in Newark, New Jersey, Babajide
-            carries both with him everywhere — including an unwavering
-            devotion to Newark&rsquo;s own Whitney Houston, complete with the
-            occasional &ldquo;may her majesty rest in peace.&rdquo;
+            recipient, but doesn&rsquo;t like to toot his own horn very much. 
           </p>
           <p className="about-body">
             Babajide is always open to new collaborations, design

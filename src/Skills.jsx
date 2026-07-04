@@ -1,17 +1,14 @@
 import Reveal from "./Reveal";
 import "./Skills.css";
 
+const FOCUS_AREAS = [
+  "Human-AI Interaction",
+  "Accessibility",
+  "Web Design & Development",
+  "Product Design, Management & Strategy",
+];
+
 const GROUPS = [
-  {
-    label: "Design",
-    items: [
-      "UI Design",
-      "Visual Identity",
-      "Prototyping",
-      "Typography",
-      "Illustration",
-    ],
-  },
   {
     label: "Development",
     items: ["JavaScript", "React", "Python", "Flask", "HTML & CSS"],
@@ -22,11 +19,30 @@ const GROUPS = [
   },
 ];
 
+const HOBBIES = [
+  "Music",
+  "Fashion Dolls",
+  "Reading",
+  "Television",
+  "Film",
+  "Fashion",
+  "Block Blast",
+];
+
 function Skills() {
   return (
     <section id="skills" className="section skills">
       <Reveal className="skills-intro">
-        <p className="eyebrow">Skills</p>
+        <p className="eyebrow">Skills &amp; Interests</p>
+      </Reveal>
+
+      <Reveal className="focus-areas">
+        <p className="skills-group-label">Focus Areas</p>
+        <ul className="focus-areas-list">
+          {FOCUS_AREAS.map((area) => (
+            <li key={area}>{area}</li>
+          ))}
+        </ul>
       </Reveal>
 
       <div className="skills-groups">
@@ -45,6 +61,15 @@ function Skills() {
           </Reveal>
         ))}
       </div>
+
+      <Reveal className="interests">
+        <p className="skills-group-label">Interests</p>
+        <ul className="skills-tags">
+          {HOBBIES.map((item) => (
+            <li key={item}>{item}</li>
+          ))}
+        </ul>
+      </Reveal>
     </section>
   );
 }
