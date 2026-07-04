@@ -10,8 +10,8 @@ import WorkDetail from "./WorkDetail";
 import Footer from "./Footer";
 
 // Matches the total runtime of the six-stroke signature draw in ijab.css
-// (last stroke: 2.5s delay + 0.5s duration = 3s).
-const DRAW_DURATION = 3000;
+// (last stroke: 1.25s delay + 0.25s duration = 1.5s).
+const DRAW_DURATION = 1500;
 
 function App() {
   const location = useLocation();

@@ -22,10 +22,10 @@ const LURKER_FULL_REVEAL_DELAY = 5000;
 
 // Once "báji" has finished growing and shrinking back down, wait this
 // long, then draw the green signature mark on top of it (rotated). The
-// draw itself takes 3s (matches the stroke delays/durations in
+// draw itself takes 1.5s (matches the stroke delays/durations in
 // ijab.css), then it holds fully drawn for 3s before fading out.
 const GREEN_OVERLAY_DELAY = 45000;
-const GREEN_DRAW_DURATION = 3000;
+const GREEN_DRAW_DURATION = 1500;
 const GREEN_HOLD_DURATION = 3000;
 // Matches the opacity transition on .hero-name-overlay in Hero.css —
 // hover shouldn't act "normal" again until the fade has actually finished.

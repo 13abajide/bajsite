@@ -12,27 +12,27 @@
 }
 
 .bajlogo--animated .bajlogo-line-1 {
-  animation: bajlogo-dash 1s linear forwards;
+  animation: bajlogo-dash 0.5s linear forwards;
 }
 .bajlogo--animated .bajlogo-line-2 {
-  animation: bajlogo-dash 0.5s linear forwards;
-  animation-delay: 1s;
+  animation: bajlogo-dash 0.25s linear forwards;
+  animation-delay: 0.5s;
 }
 .bajlogo--animated .bajlogo-line-3 {
-  animation: bajlogo-dash 0.25s linear forwards;
-  animation-delay: 1.5s;
+  animation: bajlogo-dash 0.125s linear forwards;
+  animation-delay: 0.75s;
 }
 .bajlogo--animated .bajlogo-line-4 {
-  animation: bajlogo-dash 0.25s linear forwards;
-  animation-delay: 1.75s;
+  animation: bajlogo-dash 0.125s linear forwards;
+  animation-delay: 0.875s;
 }
 .bajlogo--animated .bajlogo-line-5 {
-  animation: bajlogo-dash 0.5s linear forwards;
-  animation-delay: 2s;
+  animation: bajlogo-dash 0.25s linear forwards;
+  animation-delay: 1s;
 }
 .bajlogo--animated .bajlogo-line-6 {
-  animation: bajlogo-dash 0.5s linear forwards;
-  animation-delay: 2.5s;
+  animation: bajlogo-dash 0.25s linear forwards;
+  animation-delay: 1.25s;
 }
 
 @keyframes bajlogo-dash {
