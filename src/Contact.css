@@ -8,19 +8,6 @@
   max-width: 640px;
 }
 
-.contact-heading {
-  font-size: clamp(2.2rem, 6vw, 3.6rem);
-  font-weight: 700;
-  margin-bottom: 20px;
-}
-
-.contact-body {
-  font-size: 1.1rem;
-  color: var(--ink-soft);
-  margin-bottom: 48px;
-  max-width: 46ch;
-}
-
 .contact-links {
   border-top: 1px solid var(--line);
 }

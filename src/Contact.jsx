@@ -4,13 +4,13 @@ import "./Contact.css";
 const LINKS = [
   {
     label: "Email",
-    value: "hello@yourname.com",
-    href: "mailto:hello@yourname.com",
+    value: "babajidehamzat06@gmail.com",
+    href: "mailto:babajidehamzat06@gmail.com",
   },
   {
     label: "LinkedIn",
-    value: "linkedin.com/in/yourname",
-    href: "https://linkedin.com/in/yourname",
+    value: "linkedin.com/in/babajide-hamzat",
+    href: "https://linkedin.com/in/babajide-hamzat",
   },
 ];
 
@@ -20,12 +20,6 @@ function Contact() {
       <Reveal className="contact-grid">
         <p className="eyebrow">Contact</p>
         <div className="contact-copy">
-          <h2 className="contact-heading">Let&rsquo;s talk</h2>
-          <p className="contact-body">
-            Have a project in mind, or just want to say hello? My inbox is
-            always open.
-          </p>
-
           <ul className="contact-links">
             {LINKS.map((link) => (
               <li key={link.label}>

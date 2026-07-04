@@ -44,6 +44,12 @@
 .nav-mark:focus-visible {
   color: var(--accent);
 }
+/* On the home page the mark just scrolls to top of the page you're
+   already on, so it shouldn't read as a link — everywhere else it
+   navigates home, where the default button pointer cursor is fine. */
+.nav-mark--home {
+  cursor: default;
+}
 
 .nav-links ul {
   display: flex;

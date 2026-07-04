@@ -7,16 +7,22 @@ function About() {
       <Reveal className="about-grid">
         <p className="eyebrow">About</p>
         <div className="about-copy">
-          <h2 className="about-lead">
-            I like building things that are equal parts functional and
-            considered.
-          </h2>
           <p className="about-body">
-            Most of my work sits where design and engineering meet — I care
-            about the structure underneath as much as the details on top.
-            Outside of that, you&rsquo;ll usually find me discovering new music,
-            supporting local art and community spaces, or working on
-            whatever&rsquo;s got my curiosity at the moment.
+            Babajide Hamzat is a designer interested in the intersection of
+            aesthetics, accessibility, and artificial intelligence. He is
+            currently pursuing a Bachelor of Arts in Computer Science and
+            Cognitive Science at Columbia University in the City of New York,
+            where he is blessed to learn multitudes daily inside and outside
+            of the classroom. Babajide is proud to lead creative direction,
+            event organization, and product development for the Morningside
+            Art Exchange, a Harlem-based arts collective that regularly puts
+            on community-oriented events drawing hundreds of attendees. He is
+            also a QuestBridge National College Match and Gates Scholarship
+            recipient, but doesn&rsquo;t like to toot his own horn very much.
+          </p>
+          <p className="about-body">
+            Babajide is always open to new collaborations, design
+            opportunities, and creative projects.
           </p>
         </div>
       </Reveal>

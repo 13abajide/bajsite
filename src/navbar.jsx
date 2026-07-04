@@ -49,7 +49,7 @@ function NavigationBar({ revealed }) {
       <div className="nav-row">
         <button
           type="button"
-          className="nav-mark"
+          className={`nav-mark${isHome ? " nav-mark--home" : ""}`}
           onClick={scrollToTop}
           aria-label="Scroll to top"
         >
