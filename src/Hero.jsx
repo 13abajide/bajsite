@@ -123,6 +123,9 @@ function Hero({ revealed }) {
   return (
     <section id="top" className={`hero${revealed ? " hero--revealed" : ""}`}>
       <div className="hero-inner">
+        <p className={`hero-greeting${revealed ? " hero-greeting--revealed" : ""}`}>
+          hi, i'm
+        </p>
         <h1
           className={`hero-name${grown ? " hero-name--grown" : ""}${
             hoverable ? " hero-name--hoverable" : ""
@@ -149,9 +152,7 @@ function Hero({ revealed }) {
           </span>
           <span className="hero-name-part">de</span>
         </h1>
-        <p className="hero-tagline">
-          Designer and developer crafting considered, detail-driven work.
-        </p>
+        <p className="hero-tagline">Learner. Designer. Savant.</p>
         <div className="hero-actions">
           <Link to="/work" className="btn btn-primary">
             View my work

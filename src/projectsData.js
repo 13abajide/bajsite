@@ -85,7 +85,13 @@ export const PROJECTS = [
     problem: "When I joined the team, Doppel Market did not have a defined brand identity. This was most apparent in our website at the time, as it felt generic and disconnected from who we were. The same could be said about our logo, which was the only unique asset that had been created thus far in terms of product design.",
     process: "I sat down with the founders to learn about their story, principles, and goals for the company. I used this to create sketches of what I thought the website should look like to better reflect the ethos of the brand and showed these to the team to get feedback.",
     outcome: "Firstly, I decided to change the color of the company logo. Perhaps this seems like an inconsequential tweak, but this ended up realigning the brand's entire color story with the founders' vision. I used this new and improved color palette to build a high-fidelity prototype of the website on Figma, and worked with the engineering team to implement my design just in time for a conference where the founders presented it to potential stakeholders. I also pushed for the development of a brand identity document so it'd be easier in the future to build upon the foundation I helped to establish.",
-    processImages: [],
+    processImages: [
+      publicAsset("work/doppel-process-1.jpg"),
+      publicAsset("work/doppel-process-2.jpg"),
+      publicAsset("work/doppel-process-3.jpg"),
+      publicAsset("work/doppel-process-4.jpg"),
+      publicAsset("work/doppel-process-5.jpg"),
+    ],
   },
   {
     id: 4,
@@ -96,7 +102,7 @@ export const PROJECTS = [
     embedUrl: publicAsset("work/babajides-library.html"),
     hideProcessMarquee: true,
     context: "In the spring of 2026, I took a class called User Interface Design taught by professor Celeste Layne. For our midterm, I built a Flask-based personal music catalog, titled “babájide's library.”",
-    problem: "We had to demonstrate our design skills and build a fully-featured interface with the following requisites:\nFour distinct states (home, search, add, edit)\nClear information hierarchy through Gestalt-based grouping\nA simple, limited color palette (base, accent, light grey, dark grey)\nAccessible alt text\nScannable search feedback\nAJAX-driven forms\nInline validation\nConfirmation dialogs before destructive actions",
+    problem: "We had to demonstrate our design skills and build a fully-featured interface with the following requisites:\n• Four distinct states (home, search, add, edit)\n• Clear information hierarchy through Gestalt-based grouping\n• A simple, limited color palette (base, accent, light grey, dark grey)\n• Accessible alt text\n• Scannable search feedback\n• AJAX-driven forms\n• Inline validation\n• Confirmation dialogs before destructive actions",
     process: "I used a warmer, sage green color palette alongside Bebas Neue and DM Sans to create a more personal feel for my project. The home page leads with a hero and tagline into a \"popular this week\" card grid; search results highlight matched substrings inline across title, artist, album, description, and producer fields; add and edit forms validate per field, show a success banner with a direct link to the new entry, clear themselves, and refocus the first input for fast re-entry; discarding an edit prompts a confirmation dialog instead of silently dropping changes. I built the interface in Flask and Jinja2, styled it with a custom CSS variable system layered over Bootstrap's grid, and used jQuery/AJAX for the adding and editing of data. I also wrote and curated the content of the library (real songs with original descriptions).",
     outcome: "A fully functional working Flask application, submitted alongside a narrated walkthrough video demonstrating the full flow and capability of the website.",
     processImages: [],
