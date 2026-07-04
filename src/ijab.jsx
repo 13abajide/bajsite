@@ -10,7 +10,7 @@ const STROKES = [
 ];
 
 /**
- * The hand-drawn "Babajide" signature mark.
+ * The hand-drawn "Babájide" signature mark.
  * Pass `animated` for the once-per-load draw-in version (used for the
  * intro). Without it, the mark renders fully drawn — used for the small
  * copy that lives in the navbar once the intro has docked.
@@ -36,7 +36,7 @@ function Bajlogo({ animated = false, className = "" }) {
       style={{ fillRule: "nonzero", clipRule: "evenodd" }}
       xmlns="http://www.w3.org/2000/svg"
       role="img"
-      aria-label="Babajide — signature mark"
+      aria-label="Babájide — signature mark"
     >
       <g>
         {STROKES.map((d, i) => (
