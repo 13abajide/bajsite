@@ -11,9 +11,9 @@
   --accent-soft: #e8f5ec;
 
   /* — Type — */
-  --font-display: "Bricolage Grotesque", "Avenir Next", "Segoe UI", system-ui, sans-serif;
-  --font-body: "IBM Plex Sans", "Helvetica Neue", Arial, system-ui, sans-serif;
-  --font-mono: "IBM Plex Mono", "SFMono-Regular", Menlo, Consolas, monospace;
+  --font-display: "Bricolage Grotesque", "Avenir Next", "Segoe UI", sans-serif;
+  --font-body: "Atkinson Hyperlegible Next", "Helvetica Neue", "Segoe UI", Arial, sans-serif;
+  --font-mono: "Atkinson Hyperlegible Mono", Menlo, Consolas, monospace;
 
   /* — Layout — */
   --nav-h: 84px;
