@@ -120,14 +120,6 @@
   opacity: 0;
 }
 
-.hero-tagline {
-  font-size: clamp(1.05rem, 2vw, 1.35rem);
-  color: var(--ink-soft);
-  max-width: 32ch;
-  line-height: 1.5;
-  margin-bottom: 40px;
-}
-
 .hero-actions {
   display: flex;
   gap: 16px;

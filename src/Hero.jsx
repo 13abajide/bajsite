@@ -177,7 +177,6 @@ function Hero({ revealed }) {
           </span>
           <span className="hero-name-part">de</span>
         </h1>
-        <p className="hero-tagline">Learner. Designer. Savant.</p>
         <div className="hero-actions">
           <Link to="/work" className="btn btn-primary">
             View my work
