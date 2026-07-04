@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { scrollToId } from "./scrollTo";
+import { publicAsset } from "./projectsData";
 import Bajlogo from "./ijab";
 import "./Hero.css";
 
@@ -13,6 +14,11 @@ const GROW_DURATION = 1100;
 const HOLD_DURATION = 400;
 const SHRINK_DURATION = 1100;
 const GROW_SHRINK_TOTAL = GROW_DELAY + GROW_DURATION + HOLD_DURATION + SHRINK_DURATION;
+
+// The lurker peeks in (half visible, from the right edge) the moment
+// "báji" starts growing, then — once "báji" has shrunk back down — waits
+// this long before creeping the rest of the way into view.
+const LURKER_FULL_REVEAL_DELAY = 15000;
 
 // Once "báji" has finished growing and shrinking back down, wait this
 // long, then draw the green signature mark on top of it (rotated). The
@@ -34,6 +40,8 @@ function Hero({ revealed }) {
   const [hoverable, setHoverable] = useState(false);
   const [showGreenOverlay, setShowGreenOverlay] = useState(false);
   const [greenOverlayFading, setGreenOverlayFading] = useState(false);
+  const [lurkerPeek, setLurkerPeek] = useState(false);
+  const [lurkerFull, setLurkerFull] = useState(false);
 
   // Track the overlay's own lifecycle outside of React state so a hover
   // mid-draw can reach in and reschedule the fade without racing the
@@ -90,8 +98,11 @@ function Hero({ revealed }) {
       setHoverable(false);
       setShowGreenOverlay(false);
       setGreenOverlayFading(false);
+      setLurkerPeek(false);
+      setLurkerFull(false);
 
       timers.push(setTimeout(() => setGrown(true), GROW_DELAY));
+      timers.push(setTimeout(() => setLurkerPeek(true), GROW_DELAY));
       timers.push(
         setTimeout(
           () => setGrown(false),
@@ -99,6 +110,12 @@ function Hero({ revealed }) {
         )
       );
       timers.push(setTimeout(() => setHoverable(true), GROW_SHRINK_TOTAL));
+      timers.push(
+        setTimeout(
+          () => setLurkerFull(true),
+          GROW_SHRINK_TOTAL + LURKER_FULL_REVEAL_DELAY
+        )
+      );
       timers.push(
         setTimeout(() => {
           setShowGreenOverlay(true);
@@ -122,9 +139,17 @@ function Hero({ revealed }) {
 
   return (
     <section id="top" className={`hero${revealed ? " hero--revealed" : ""}`}>
+      <img
+        src={publicAsset("littlebaji.png")}
+        alt=""
+        aria-hidden="true"
+        className={`hero-lurker${lurkerPeek ? " hero-lurker--peek" : ""}${
+          lurkerFull ? " hero-lurker--full" : ""
+        }`}
+      />
       <div className="hero-inner">
         <p className={`hero-greeting${revealed ? " hero-greeting--revealed" : ""}`}>
-          hi, i'm
+          hi, i&apos;m
         </p>
         <h1
           className={`hero-name${grown ? " hero-name--grown" : ""}${

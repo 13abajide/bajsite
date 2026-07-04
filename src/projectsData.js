@@ -31,7 +31,7 @@ function figmaEmbedUrl(figmaUrl) {
 // built for the GitHub Pages subpath (Vite only rewrites URLs it can see
 // in index.html/JSX attributes, not string literals in this data file),
 // so every asset path below goes through this instead.
-function publicAsset(path) {
+export function publicAsset(path) {
   return `${import.meta.env.BASE_URL.replace(/\/$/, "")}/${path.replace(/^\//, "")}`;
 }
 
