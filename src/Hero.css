@@ -25,9 +25,9 @@
    clicks so it never gets in the way of the actual page. */
 .hero-lurker {
   position: absolute;
+  top: 0;
   right: 0;
-  bottom: 0;
-  height: clamp(240px, 42vw, 440px);
+  height: calc(100vh - var(--nav-h));
   width: auto;
   z-index: 0;
   pointer-events: none;

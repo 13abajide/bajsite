@@ -18,7 +18,7 @@ const GROW_SHRINK_TOTAL = GROW_DELAY + GROW_DURATION + HOLD_DURATION + SHRINK_DU
 // The lurker peeks in (half visible, from the right edge) the moment
 // "báji" starts growing, then — once "báji" has shrunk back down — waits
 // this long before creeping the rest of the way into view.
-const LURKER_FULL_REVEAL_DELAY = 15000;
+const LURKER_FULL_REVEAL_DELAY = 5000;
 
 // Once "báji" has finished growing and shrinking back down, wait this
 // long, then draw the green signature mark on top of it (rotated). The
