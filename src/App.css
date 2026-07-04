@@ -17,15 +17,18 @@
     width 0.85s var(--ease), opacity 0.35s linear 0.5s;
 }
 
+@media (max-width: 640px) {
+  .intro-mark {
+    width: min(72vw, 320px);
+  }
+}
+
+/* Must come after the mobile width override above — same specificity,
+   so source order decides, and docked always needs to win regardless
+   of viewport width. */
 .intro-mark--docked {
   top: calc(var(--nav-h) / 2);
   left: calc(var(--gutter) + 44px);
   width: 88px;
   opacity: 0;
-}
-
-@media (max-width: 640px) {
-  .intro-mark {
-    width: min(72vw, 320px);
-  }
 }
