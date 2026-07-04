@@ -191,9 +191,9 @@ function Flipbook({
           width={360}
           height={Math.round(360 / pageAspectRatio)}
           size="stretch"
-          minWidth={160}
+          minWidth={64}
           maxWidth={800}
-          minHeight={200}
+          minHeight={Math.round(64 / pageAspectRatio)}
           maxHeight={1000}
           showCover
           drawShadow
