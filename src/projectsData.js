@@ -77,7 +77,7 @@ export const PROJECTS = [
     title: "Columbia Build Lab (Doppel Market)",
     categories: ["school", "ui-ux"],
     year: "2026",
-    thumbnail: null,
+    thumbnail: publicAsset("work/doppel-market-thumb.jpg"),
     embedUrl: figmaEmbedUrl(
       "https://www.figma.com/proto/WjtcK6km7S61QyKOMJZhNt/Figma-progress-thus-far?node-id=1161-3062&t=9vp07jZ5LSTY6RJU-0&scaling=scale-down-width&content-scaling=fixed&page-id=1161%3A5805"
     ),
