@@ -193,27 +193,6 @@ function Hero({ revealed }) {
           </a>
         </div>
       </div>
-
-      <a
-        href="#about"
-        className="hero-scroll"
-        aria-label="Scroll to About section"
-        onClick={(e) => {
-          e.preventDefault();
-          scrollToId("about");
-        }}
-      >
-        <span>Scroll</span>
-        <svg width="14" height="22" viewBox="0 0 14 22" fill="none" aria-hidden="true">
-          <path
-            d="M7 1V21M7 21L1 15M7 21L13 15"
-            stroke="currentColor"
-            strokeWidth="1.4"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </svg>
-      </a>
     </section>
   );
 }
