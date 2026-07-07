@@ -4,8 +4,8 @@ import "./Contact.css";
 const LINKS = [
   {
     label: "Email",
-    value: "babajidehamzat06@gmail.com",
-    href: "mailto:babajidehamzat06@gmail.com",
+    value: "me@babajide.fyi",
+    href: "mailto:me@babajide.fyi",
   },
   {
     label: "LinkedIn",
