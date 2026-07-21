@@ -8,12 +8,12 @@ function About() {
         <p className="eyebrow">About</p>
         <div className="about-copy">
           <p className="about-body">
-            Babájide Hamzat is a designer interested in the intersection of
+            Bàbájídé Hamzat is a designer interested in the intersection of
             aesthetics, accessibility, and artificial intelligence. He is
             currently pursuing a Bachelor of Arts in Computer Science and
             Cognitive Science at Columbia University in the City of New York,
             where he is blessed to learn multitudes daily inside and outside
-            of the classroom. Babájide is proud to lead creative direction,
+            of the classroom. Bàbájídé is proud to lead creative direction,
             event organization, and product development for the Morningside
             Art Exchange, a Harlem-based arts collective that regularly puts
             on community-oriented events drawing hundreds of attendees. He is
@@ -23,7 +23,7 @@ function About() {
             Jersey.
           </p>
           <p className="about-body">
-            Babájide is always open to new collaborations, design
+            Bàbájídé is always open to new collaborations, design
             opportunities, and creative projects.
           </p>
         </div>

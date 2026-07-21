@@ -5,7 +5,7 @@ import { publicAsset } from "./projectsData";
 import Bajlogo from "./ijab";
 import "./Hero.css";
 
-// "báji" stays normal-sized through the fade-in, waits this long, then
+// "bájí" stays normal-sized through the fade-in, waits this long, then
 // grows big and holds briefly before shrinking back down — matching the
 // transitions on .hero-name-mid / .hero-name--grown in Hero.css, which
 // both take the same 1.1s so growing and shrinking are the same speed.
@@ -16,11 +16,11 @@ const SHRINK_DURATION = 1100;
 const GROW_SHRINK_TOTAL = GROW_DELAY + GROW_DURATION + HOLD_DURATION + SHRINK_DURATION;
 
 // The lurker peeks in (half visible, from the right edge) the moment
-// "báji" starts growing, then — once "báji" has shrunk back down — waits
+// "bájí" starts growing, then — once "bájí" has shrunk back down — waits
 // this long before creeping the rest of the way into view.
 const LURKER_FULL_REVEAL_DELAY = 5000;
 
-// Once "báji" has finished growing and shrinking back down, wait this
+// Once "bájí" has finished growing and shrinking back down, wait this
 // long, then draw the green signature mark on top of it (rotated). The
 // draw itself takes 1.5s (matches the stroke delays/durations in
 // ijab.css), then it holds fully drawn for 3s before fading out.
@@ -63,7 +63,7 @@ function Hero({ revealed }) {
     }, delay);
   };
 
-  // Hovering "báji" while the green overlay is up shouldn't trigger the
+  // Hovering "bájí" while the green overlay is up shouldn't trigger the
   // normal hover effect underneath it — instead let the draw finish (or,
   // if it already has, fade immediately), then only re-enable the normal
   // hover once the overlay is fully gone.
@@ -156,13 +156,13 @@ function Hero({ revealed }) {
             hoverable ? " hero-name--hoverable" : ""
           }`}
         >
-          <span className="hero-name-part">Ba</span>
+          <span className="hero-name-part">Bà</span>
           <span className="hero-name-mid-wrap">
             <span
               className="hero-name-mid"
               onMouseEnter={handleOverlayHoverInterrupt}
             >
-              báji
+              bájí
             </span>
             {showGreenOverlay && (
               <span
@@ -175,7 +175,7 @@ function Hero({ revealed }) {
               </span>
             )}
           </span>
-          <span className="hero-name-part">de</span>
+          <span className="hero-name-part">dé</span>
         </h1>
         <div className="hero-actions">
           <Link to="/work" className="btn btn-primary">
